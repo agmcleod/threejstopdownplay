@@ -75,7 +75,7 @@ var Scene = (function () {
   Scene.prototype.addCube = function () {
     var size = Math.ceil(Math.random() * 3);
     var geo = new THREE.BoxGeometry(size, size, size);
-    var mat = new THREE.MeshLambertMaterial({ color: Math.random() * 0xffffff });
+    var mat = new THREE.MeshPhongMaterial({ color: Math.random() * 0xffffff });
     var cube = new THREE.Mesh(geo, mat);
     cube.castShadow = true;
 
@@ -101,7 +101,6 @@ var Scene = (function () {
     this.spotlightTarget = new THREE.Object3D();
     this.spotlightTarget.position.set(0, 0, 0);
     this.playerLight.target = this.spotlightTarget;
-    this.playerLight.shadowCameraVisible = true;
     this.scene.add(this.playerLight);
     this.scene.add(this.spotlightTarget);
 
