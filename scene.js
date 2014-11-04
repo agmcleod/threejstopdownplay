@@ -12,6 +12,8 @@ var Scene = (function () {
     this.renderer = renderer;
     container.appendChild(renderer.domElement);
 
+    this.scene.add(this.camera);
+
     var _this = this;
     window.addEventListener("resize", function () {
       _this.camera.aspect = window.innerWidth / window.innerHeight;
@@ -24,25 +26,21 @@ var Scene = (function () {
       switch ( event.keyCode ) {
         case 87: // W
           e.preventDefault();
-          _this.playerLight.position.x -= 0.2;
           _this.camera.position.x -= 0.2;
           moved = true;
           break;
         case 65: // A
           e.preventDefault();
-          _this.playerLight.position.z += 0.2;
           _this.camera.position.z += 0.2;
           moved = true;
           break;
         case 83: // S
           e.preventDefault();
-          _this.playerLight.position.x += 0.2;
           _this.camera.position.x += 0.2;
           moved = true;
           break;
         case 68: // D
           e.preventDefault();
-          _this.playerLight.position.z -= 0.2;
           _this.camera.position.z -= 0.2;
           moved = true;
           break;
@@ -51,9 +49,9 @@ var Scene = (function () {
       }
 
       if (moved) {
-        /* var lookAtPos = _this.playerLight.position.clone();
+        var lookAtPos = _this.camera.position.clone();
         lookAtPos.y = 0;
-        _this.playerLight.target = _this.camera; */
+        _this.camera.lookAt(lookAtPos);
       }
     }, false);
 
@@ -75,19 +73,21 @@ var Scene = (function () {
   }
 
   Scene.prototype.addObjects = function () {
-    //this.scene.add( new THREE.AmbientLight( 0x444444 ) );
+    this.scene.add( new THREE.AmbientLight( 0x000000 ) );
     var planeGeom = new THREE.PlaneGeometry(70, 70, 32);
     var planeMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.FrontSide });
     var plane = new THREE.Mesh(planeGeom, planeMaterial);
     plane.rotation.x = Math.PI * -0.5;
     plane.receiveShadow  = true;
     this.scene.add(plane);
+    this.camera.lookAt(this.scene.position);
 
     this.playerLight = new THREE.SpotLight(0xffffff);
     this.playerLight.castShadow = true;
     this.playerLight.shadowCameraVisible = true;
     this.camera.add(this.playerLight.target);
-    this.playerLight.position.set(0, 1, 0);
+    this.playerLight.target = this.camera;
+    this.playerLight.target.position.set(0, 1, 0);
     this.playerLight.position = this.camera.position;
 
     for (var i = 0; i < 40; i++) {
@@ -97,7 +97,6 @@ var Scene = (function () {
 
   Scene.prototype.render = function () {
     requestAnimationFrame(this.render.bind(this));
-    this.camera.lookAt(this.playerLight.position);
     this.renderer.render(this.scene, this.camera);
   }
 
