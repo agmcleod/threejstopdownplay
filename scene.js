@@ -10,6 +10,16 @@ var Scene = (function () {
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.shadowMapEnabled = true;
     this.renderer = renderer;
+
+    this.renderer.shadowCameraNear = 3;
+    this.renderer.shadowCameraFar = this.camera.far;
+    this.renderer.shadowCameraFov = 50;
+
+    this.renderer.shadowMapBias = 0.0039;
+    this.renderer.shadowMapDarkness = 0.5;
+    this.renderer.shadowMapWidth = 1024;
+    this.renderer.shadowMapHeight = 1024;
+
     container.appendChild(renderer.domElement);
 
     this.scene.add(this.camera);
@@ -52,6 +62,9 @@ var Scene = (function () {
         var lookAtPos = _this.camera.position.clone();
         lookAtPos.y = 0;
         _this.camera.lookAt(lookAtPos);
+        _this.playerLight.position.x = lookAtPos.x;
+        _this.playerLight.position.z = lookAtPos.z;
+        _this.spotlightTarget.position.set(lookAtPos.x, lookAtPos.y, lookAtPos.z);
       }
     }, false);
 
@@ -75,7 +88,7 @@ var Scene = (function () {
   Scene.prototype.addObjects = function () {
     this.scene.add( new THREE.AmbientLight( 0x000000 ) );
     var planeGeom = new THREE.PlaneGeometry(70, 70, 32);
-    var planeMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.FrontSide });
+    var planeMaterial = new THREE.MeshPhongMaterial({ color: 0x000000, side: THREE.FrontSide });
     var plane = new THREE.Mesh(planeGeom, planeMaterial);
     plane.rotation.x = Math.PI * -0.5;
     plane.receiveShadow  = true;
@@ -84,11 +97,16 @@ var Scene = (function () {
 
     this.playerLight = new THREE.SpotLight(0xffffff);
     this.playerLight.castShadow = true;
+    this.playerLight.position.set(0, 40, 0);
+    this.spotlightTarget = new THREE.Object3D();
+    this.spotlightTarget.position.set(0, 0, 0);
+    this.playerLight.target = this.spotlightTarget;
     this.playerLight.shadowCameraVisible = true;
-    this.camera.add(this.playerLight.target);
-    this.playerLight.target = this.camera;
-    this.playerLight.target.position.set(0, 1, 0);
-    this.playerLight.position = this.camera.position;
+    this.scene.add(this.playerLight);
+
+
+    var spotLightHelper = new THREE.SpotLightHelper(this.playerLight, 50);
+    this.scene.add(spotLightHelper);
 
     for (var i = 0; i < 40; i++) {
       this.addCube();
