@@ -103,6 +103,7 @@ var Scene = (function () {
     this.playerLight.target = this.spotlightTarget;
     this.playerLight.shadowCameraVisible = true;
     this.scene.add(this.playerLight);
+    this.scene.add(this.spotlightTarget);
 
 
     var spotLightHelper = new THREE.SpotLightHelper(this.playerLight, 50);
