@@ -93,17 +93,17 @@ var Scene = (function () {
     this.scene.add(plane);
     this.camera.lookAt(this.scene.position);
 
-    this.playerLight = new THREE.SpotLight(0xffffff);
-    this.playerLight.castShadow = true;
-    this.playerLight.position.set(0, 0, 0);
+    this.cameraLight = new THREE.SpotLight(0xffffff);
+    this.cameraLight.castShadow = true;
+    this.cameraLight.position.set(0, 0, 0);
     this.spotlightTarget = new THREE.Object3D();
     this.spotlightTarget.position.set(0, 0, 0);
-    this.playerLight.target = this.spotlightTarget;
-    this.camera.add(this.playerLight);
+    this.cameraLight.target = this.spotlightTarget;
+    this.camera.add(this.cameraLight);
     this.scene.add(this.spotlightTarget);
 
 
-    var spotLightHelper = new THREE.SpotLightHelper(this.playerLight, 50);
+    var spotLightHelper = new THREE.SpotLightHelper(this.cameraLight, 50);
     this.scene.add(spotLightHelper);
 
     for (var i = 0; i < 40; i++) {
