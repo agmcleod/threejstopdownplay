@@ -62,8 +62,6 @@ var Scene = (function () {
         var lookAtPos = _this.camera.position.clone();
         lookAtPos.y = 0;
         _this.camera.lookAt(lookAtPos);
-        _this.playerLight.position.x = lookAtPos.x;
-        _this.playerLight.position.z = lookAtPos.z;
         _this.spotlightTarget.position.set(lookAtPos.x, lookAtPos.y, lookAtPos.z);
       }
     }, false);
@@ -97,11 +95,11 @@ var Scene = (function () {
 
     this.playerLight = new THREE.SpotLight(0xffffff);
     this.playerLight.castShadow = true;
-    this.playerLight.position.set(0, 40, 0);
+    this.playerLight.position.set(0, 0, 0);
     this.spotlightTarget = new THREE.Object3D();
     this.spotlightTarget.position.set(0, 0, 0);
     this.playerLight.target = this.spotlightTarget;
-    this.scene.add(this.playerLight);
+    this.camera.add(this.playerLight);
     this.scene.add(this.spotlightTarget);
 
 
