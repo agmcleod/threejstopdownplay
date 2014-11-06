@@ -74,44 +74,44 @@ var Scene = (function () {
       _this.renderer.setSize(window.innerWidth, window.innerHeight);
     }, false);
 
-    window.addEventListener("keydown", function (e) {
-      var moved = false;
-      switch ( event.keyCode ) {
-        case 87: // W
-          e.preventDefault();
-          _this.camera.position.x -= 0.2;
-          moved = true;
-          break;
-        case 65: // A
-          e.preventDefault();
-          _this.camera.position.z += 0.2;
-          moved = true;
-          break;
-        case 83: // S
-          e.preventDefault();
-          _this.camera.position.x += 0.2;
-          moved = true;
-          break;
-        case 68: // D
-          e.preventDefault();
-          _this.camera.position.z -= 0.2;
-          moved = true;
-          break;
-        default:
-          return true;
-      }
-
-      if (moved) {
-        var lookAtPos = _this.camera.position.clone();
-        lookAtPos.y = 0;
-        _this.camera.lookAt(lookAtPos);
-        _this.spotlightTarget.position.set(lookAtPos.x, lookAtPos.y, lookAtPos.z);
-      }
-    }, false);
+    this.keyControls = new KeyControls();
+    this.keyControls.bindKey("W");
+    this.keyControls.bindKey("A");
+    this.keyControls.bindKey("S");
+    this.keyControls.bindKey("D");
   };
 
   Scene.prototype.render = function () {
     requestAnimationFrame(this.render.bind(this));
+    
+    var moved = false;
+    if (this.keyControls.isPressed("W")) {
+      this.camera.position.x -= 0.2;
+      moved = true;
+    }
+
+    if (this.keyControls.isPressed("A")) {
+      this.camera.position.z += 0.2;
+      moved = true;
+    }
+
+    if (this.keyControls.isPressed("S")) {
+      this.camera.position.x += 0.2;
+      moved = true;
+    }
+
+    if (this.keyControls.isPressed("D")) {
+      this.camera.position.z -= 0.2;
+      moved = true;
+    }
+
+    if (moved) {
+      var lookAtPos = this.camera.position.clone();
+      lookAtPos.y = 0;
+      this.camera.lookAt(lookAtPos);
+      this.spotlightTarget.position.set(lookAtPos.x, lookAtPos.y, lookAtPos.z);
+    }
+
     this.renderer.render(this.scene, this.camera);
   }
 
