@@ -15,7 +15,21 @@ var Player = (function () {
     ];
 
     // var geometry = new THREE.PolyhedronGeometry( verticesOfCube, indicesOfFaces, 1, 1 );
-    var geometry = new THREE.BoxGeometry(1, 1, 2);
+
+    var geometry = new THREE.Geometry();
+    geometry.vertices.push(
+      new THREE.Vector3(0, 1, 0), new THREE.Vector3(0, 0, 1),
+      new THREE.Vector3(-1, 0, 0), new THREE.Vector3(0, 0, -1),
+      new THREE.Vector3(1, 0, 0), new THREE.Vector3(0, 0, 1),
+      new THREE.Vector3(0, -1, 0), new THREE.Vector3(0, 0, 1),
+      new THREE.Vector3(-1, 0, 0), new THREE.Vector3(0, 0, -1),
+      new THREE.Vector3(1, 0, 0), new THREE.Vector3(0, 0, 1)
+    );
+
+    geometry.faces.push( new THREE.Face3( 0, 1, 2 ) );
+
+    geometry.computeBoundingSphere();
+
     var mat = Physijs.createMaterial(new THREE.MeshPhongMaterial({ color: 0xffff00 }));
     this.mesh = new Physijs.BoxMesh(geometry, mat);
     this.mesh.position.z = 3;
