@@ -1,7 +1,7 @@
 var Scene = (function () {
   function Scene () {
     var container = document.getElementById("screen");
-    this.scene = new THREE.Scene();
+    this.scene = new Physijs.Scene();
 
     var renderer = new THREE.WebGLRenderer( { antialias: true } );
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -19,13 +19,13 @@ var Scene = (function () {
   Scene.prototype.addCube = function () {
     var size = Math.ceil(Math.random() * 3);
     var geo = new THREE.BoxGeometry(size, size, size);
-    var mat = new THREE.MeshPhongMaterial({ color: Math.random() * 0xffffff });
-    var cube = new THREE.Mesh(geo, mat);
+    var mat = Physijs.createMaterial(new THREE.MeshPhongMaterial({ color: Math.random() * 0xffffff }));
+    var cube = new Physijs.BoxMesh(geo, mat);
     cube.castShadow = true;
 
     cube.position.x = -35 + Math.round(Math.random() * 70);
     cube.position.z = - 35 + Math.round(Math.random() * 70);
-    cube.position.y = 1;
+    cube.position.y = size / 2;
     this.scene.add(cube);
   }
 
@@ -43,12 +43,11 @@ var Scene = (function () {
   Scene.prototype.addObjects = function () {
     this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 2000);
     this.camera.position.set(0, 20, 0);
-    this.scene.add(this.camera);
 
     this.scene.add( new THREE.AmbientLight( 0x000000 ) );
     var planeGeom = new THREE.PlaneGeometry(70, 70, 32);
-    var planeMaterial = new THREE.MeshPhongMaterial({ color: 0x000000, side: THREE.FrontSide });
-    var plane = new THREE.Mesh(planeGeom, planeMaterial);
+    var planeMaterial = Physijs.createMaterial(new THREE.MeshPhongMaterial({ color: 0x000000, side: THREE.FrontSide }));
+    var plane = new Physijs.BoxMesh(planeGeom, planeMaterial, 0);
     plane.rotation.x = Math.PI * -0.5;
     plane.receiveShadow  = true;
     this.scene.add(plane);
@@ -63,7 +62,8 @@ var Scene = (function () {
       this.addCube();
     }
 
-    this.player = new Player(this.camera);
+    this.player = new Player(this.scene);
+    this.scene.add(this.camera);
   }
 
   Scene.prototype.bindEvents = function () {
@@ -86,30 +86,34 @@ var Scene = (function () {
     
     var moved = false;
     if (this.keyControls.isPressed("W")) {
-      this.camera.position.x -= 0.2;
+      this.player.mesh.position.x -= 0.2;
       moved = true;
     }
 
     if (this.keyControls.isPressed("A")) {
-      this.camera.position.z += 0.2;
+      this.player.mesh.position.z += 0.2;
       moved = true;
     }
 
     if (this.keyControls.isPressed("S")) {
-      this.camera.position.x += 0.2;
+      this.player.mesh.position.x += 0.2;
       moved = true;
     }
 
     if (this.keyControls.isPressed("D")) {
-      this.camera.position.z -= 0.2;
+      this.player.mesh.position.z -= 0.2;
       moved = true;
     }
 
+    this.scene.simulate();
+
     if (moved) {
-      var lookAtPos = this.camera.position.clone();
+      this.player.mesh.__dirtyPosition = true;
+      /* var lookAtPos = this.player.mesh.position.clone();
+      this.camera.position.set(lookAtPos.x, lookAtPos.y, lookAtPos.z);
       lookAtPos.y = 0;
       this.camera.lookAt(lookAtPos);
-      this.spotlightTarget.position.set(lookAtPos.x, lookAtPos.y, lookAtPos.z);
+      this.spotlightTarget.position.set(lookAtPos.x, lookAtPos.y, lookAtPos.z); */
     }
 
     this.renderer.render(this.scene, this.camera);

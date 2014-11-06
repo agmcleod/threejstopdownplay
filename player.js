@@ -14,11 +14,15 @@ var Player = (function () {
       4,5,6,    6,7,4
     ];
 
-    var geometry = new THREE.PolyhedronGeometry( verticesOfCube, indicesOfFaces, 1, 1 );
-    var mat = new THREE.MeshPhongMaterial({ color: 0xffff00 });
-    this.mesh = new THREE.Mesh(geometry, mat);
-    this.mesh.position.z = -parent.position.y + 1;
+    // var geometry = new THREE.PolyhedronGeometry( verticesOfCube, indicesOfFaces, 1, 1 );
+    var geometry = new THREE.BoxGeometry(1, 1, 2);
+    var mat = Physijs.createMaterial(new THREE.MeshPhongMaterial({ color: 0xffff00 }));
+    this.mesh = new Physijs.BoxMesh(geometry, mat);
+    this.mesh.position.z = 3;
     this.mesh.rotation.x = Math.PI * 0.5;
+    var v = new THREE.Vector3(0, 0, 0);
+    this.mesh.setAngularFactor(v);
+    this.mesh.setAngularVelocity(v);
     parent.add(this.mesh);
   }
 
