@@ -1,7 +1,7 @@
 var Scene = (function () {
   function Scene () {
     var container = document.getElementById("screen");
-    this.scene = new Physijs.Scene();
+    this.scene = new THREE.Scene(); // new Physijs.Scene();
 
     var renderer = new THREE.WebGLRenderer( { antialias: true } );
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -19,8 +19,8 @@ var Scene = (function () {
   Scene.prototype.addCube = function () {
     var size = Math.ceil(Math.random() * 3);
     var geo = new THREE.BoxGeometry(size, size, size);
-    var mat = Physijs.createMaterial(new THREE.MeshPhongMaterial({ color: Math.random() * 0xffffff }));
-    var cube = new Physijs.BoxMesh(geo, mat);
+    var mat = new THREE.MeshPhongMaterial({ color: Math.random() * 0xffffff });
+    var cube = new THREE.Mesh(geo, mat);
     cube.castShadow = true;
 
     cube.position.x = -35 + Math.round(Math.random() * 70);
@@ -46,8 +46,8 @@ var Scene = (function () {
 
     this.scene.add( new THREE.AmbientLight( 0x000000 ) );
     var planeGeom = new THREE.PlaneGeometry(70, 70, 32);
-    var planeMaterial = Physijs.createMaterial(new THREE.MeshPhongMaterial({ color: 0x000000, side: THREE.FrontSide }));
-    var plane = new Physijs.BoxMesh(planeGeom, planeMaterial, 0);
+    var planeMaterial = new THREE.MeshPhongMaterial({ color: 0x000000, side: THREE.FrontSide });
+    var plane = new THREE.Mesh(planeGeom, planeMaterial, 0);
     plane.rotation.x = Math.PI * -0.5;
     plane.receiveShadow  = true;
     this.scene.add(plane);
@@ -105,16 +105,16 @@ var Scene = (function () {
       moved = true;
     }
 
-    this.scene.simulate();
-
     if (moved) {
-      this.player.mesh.__dirtyPosition = true;
-      /* var lookAtPos = this.player.mesh.position.clone();
+      //this.player.mesh.__dirtyPosition = true;
+      var lookAtPos = this.player.mesh.position.clone();
       this.camera.position.set(lookAtPos.x, lookAtPos.y, lookAtPos.z);
       lookAtPos.y = 0;
       this.camera.lookAt(lookAtPos);
-      this.spotlightTarget.position.set(lookAtPos.x, lookAtPos.y, lookAtPos.z); */
+      this.spotlightTarget.position.set(lookAtPos.x, lookAtPos.y, lookAtPos.z);
     }
+
+    //this.scene.simulate();
 
     this.renderer.render(this.scene, this.camera);
   }
