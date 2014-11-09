@@ -89,23 +89,24 @@ var Scene = (function () {
     requestAnimationFrame(this.render.bind(this));
     
     var moved = false;
+    var vel = this.player.mesh.getLinearVelocity();
     if (this.keyControls.isPressed("W")) {
-      this.player.mesh.position.x -= 0.2;
+      this.player.mesh.setLinearVelocity(new THREE.Vector3(-10, vel.y, vel.z));
       moved = true;
     }
 
     if (this.keyControls.isPressed("A")) {
-      this.player.mesh.position.z += 0.2;
+      this.player.mesh.setLinearVelocity(new THREE.Vector3(vel.x, vel.y, 10));
       moved = true;
     }
 
     if (this.keyControls.isPressed("S")) {
-      this.player.mesh.position.x += 0.2;
+      this.player.mesh.setLinearVelocity(new THREE.Vector3(10, vel.y, vel.z));
       moved = true;
     }
 
     if (this.keyControls.isPressed("D")) {
-      this.player.mesh.position.z -= 0.2;
+      this.player.mesh.setLinearVelocity(new THREE.Vector3(vel.x, vel.y, -10));
       moved = true;
     }
 

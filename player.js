@@ -11,6 +11,11 @@ var Player = (function () {
     this.mesh.position.y = 0.5;
     parent.add(this.mesh);
     var _this = this;
+    var zero = new THREE.Vector3(0, 0, 0);
+    this.mesh.addEventListener('collision', function (other_object, relative_velocity, relative_rotation, contact_normal) {
+      _this.mesh.setLinearVelocity(zero);
+      _this.mesh.setAngularVelocity(zero);
+    });
   }
 
   return Player;
