@@ -1,26 +1,92 @@
-function MouseControls () {
-  this.screenCoords = { x: null, y: null };
-  this.isDown = false;
-}
+(function () {
+  // list of standard pointer event type
+  var pointerEventList = [
+    "mousewheel",
+    "pointermove",
+    "pointerdown",
+    "pointerup",
+    "pointercancel",
+    undefined,
+    undefined
+  ];
 
-MouseControls.prototype.bindTouch = function () {
-  var _this = this;
-  window.addEventListener("mousedown", function (e) {
-    e.preventDefault();
-    _this.isDown = true;
-  });
+  // previous MS prefixed pointer event type
+  var MSPointerEventList = [
+    "mousewheel",
+    "MSPointerMove",
+    "MSPointerDown",
+    "MSPointerUp",
+    "MSPointerCancel",
+    undefined,
+    undefined
+  ];
 
-  window.addEventListener("mousemove", function (e) {
-    _this.screenCoords.x = e.clientX;
-    _this.screenCoords.y = e.clientY;
-  });
+  // legacy mouse event type
+  var mouseEventList = [
+    "mousewheel",
+    "mousemove",
+    "mousedown",
+    "mouseup",
+    undefined,
+    undefined,
+    undefined
+  ];
 
-  window.addEventListener("mouseup", function (e) {
-    e.preventDefault();
-    _this.isDown = false;
-  });
-}
+  // iOS style touch event type
+  var touchEventList = [
+    undefined,
+    "touchmove",
+    "touchstart",
+    "touchend",
+    "touchcancel",
+    undefined,
+    undefined
+  ];
 
-MouseControls.prototype.mouseDown = function () {
-  return this.isDown;
-}
+  var POINTER_MOVE = 1;
+  var POINTER_DOWN = 2;
+  var POINTER_UP = 3;
+  var POINTER_CANCEL = 4;
+
+  if (navigator.pointerEnabled) {
+    activeEventList = pointerEventList;
+  }
+  else if (navigator.msPointerEnabled) { // check for backward compatibility with the 'MS' prefix
+    activeEventList = MSPointerEventList;
+  }
+  else if (("createTouch" in document) || ("ontouchstart" in window) || (navigator.isCocoonJS) || navigator.maxTouchPoints > 0) {
+    activeEventList = touchEventList;
+  }
+  else { // Regular Mouse events
+    activeEventList = mouseEventList;
+  }
+
+  function MouseControls () {
+    this.screenCoords = { x: null, y: null };
+    this.isDown = false;
+  }
+
+  MouseControls.prototype.bindTouch = function () {
+    var _this = this;
+    window.addEventListener(activeEventList[POINTER_DOWN], function (e) {
+      e.preventDefault();
+      _this.isDown = true;
+    });
+
+    window.addEventListener(activeEventList[POINTER_MOVE], function (e) {
+      _this.screenCoords.x = e.clientX;
+      _this.screenCoords.y = e.clientY;
+    });
+
+    window.addEventListener(activeEventList[POINTER_UP], function (e) {
+      e.preventDefault();
+      _this.isDown = false;
+    });
+  }
+
+  MouseControls.prototype.mouseDown = function () {
+    return this.isDown;
+  }
+
+  window.MouseControls = MouseControls;
+})();
