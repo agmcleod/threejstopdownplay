@@ -1,4 +1,7 @@
 var Scene = (function () {
+  var notMovingVector = new THREE.Vector3(0, 0, 0);
+  var MAX_VEL = 5;
+  var MAX_VEL_NEG = -MAX_VEL;
   function Scene () {
     var container = document.getElementById("screen");
     this.scene = new Physijs.Scene();
@@ -78,46 +81,47 @@ var Scene = (function () {
       _this.renderer.setSize(window.innerWidth, window.innerHeight);
     }, false);
 
-    this.keyControls = new KeyControls();
-    this.keyControls.bindKey("W");
-    this.keyControls.bindKey("A");
-    this.keyControls.bindKey("S");
-    this.keyControls.bindKey("D");
+    this.mouseControls = new MouseControls();
+    this.mouseControls.bindTouch();
   };
 
   Scene.prototype.render = function () {
     requestAnimationFrame(this.render.bind(this));
     
-    var moved = false;
     var vel = this.player.mesh.getLinearVelocity();
-    if (this.keyControls.isPressed("W")) {
-      this.player.mesh.setLinearVelocity(new THREE.Vector3(-10, vel.y, vel.z));
-      moved = true;
-    }
+    
+    if (this.mouseControls.isDown) {
+      var coords = this.mouseControls.screenCoords;
+      var vector = new THREE.Vector3();
 
-    if (this.keyControls.isPressed("A")) {
-      this.player.mesh.setLinearVelocity(new THREE.Vector3(vel.x, vel.y, 10));
-      moved = true;
-    }
+      vector.set(
+        ( this.mouseControls.screenCoords.x / window.innerWidth ) * 2 - 1,
+        - ( this.mouseControls.screenCoords.y / window.innerHeight ) * 2 + 1,
+        0.5
+      );
 
-    if (this.keyControls.isPressed("S")) {
-      this.player.mesh.setLinearVelocity(new THREE.Vector3(10, vel.y, vel.z));
-      moved = true;
-    }
+      vector.unproject(this.camera);
 
-    if (this.keyControls.isPressed("D")) {
-      this.player.mesh.setLinearVelocity(new THREE.Vector3(vel.x, vel.y, -10));
-      moved = true;
-    }
+      var dir = vector.sub(this.player.mesh.position).normalize();
+      var distance = - this.player.mesh.position.y / dir.y;
+      dir.multiplyScalar(distance);
+      var xVel = dir.x * -40, zVel = dir.z * -40;
 
-    if (moved) {
-      this.player.mesh.__dirtyPosition = true;
+      if (xVel > MAX_VEL) xVel = MAX_VEL;
+      if (zVel > MAX_VEL) zVel = MAX_VEL;
+      if (xVel < MAX_VEL_NEG) xVel = MAX_VEL_NEG;
+      if (zVel < MAX_VEL_NEG) zVel = MAX_VEL_NEG;
+
+      this.player.mesh.setLinearVelocity(new THREE.Vector3(xVel, 0, zVel));
+    }
+    else {
+      this.player.mesh.setLinearVelocity(notMovingVector);
     }
 
     var lookAtPos = this.player.mesh.position.clone();
-    this.camera.position.set(lookAtPos.x, this.camera.position.y, lookAtPos.z);
+    //this.camera.position.set(lookAtPos.x, this.camera.position.y, lookAtPos.z);
     lookAtPos.y = 0;
-    this.camera.lookAt(lookAtPos);
+    //this.camera.lookAt(lookAtPos);
     this.spotlightTarget.position.set(lookAtPos.x, lookAtPos.y, lookAtPos.z);
 
     this.scene.simulate();
