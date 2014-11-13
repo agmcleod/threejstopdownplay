@@ -74,8 +74,15 @@
     });
 
     window.addEventListener(activeEventList[POINTER_MOVE], function (e) {
-      _this.screenCoords.x = e.clientX;
-      _this.screenCoords.y = e.clientY;
+      if (e.touches) {
+        var t = e.touches[0];
+        _this.screenCoords.x = t.clientX;
+        _this.screenCoords.y = t.clientY;
+      }
+      else {
+        _this.screenCoords.x = e.clientX;
+        _this.screenCoords.y = e.clientY;
+      }
     });
 
     window.addEventListener(activeEventList[POINTER_UP], function (e) {
