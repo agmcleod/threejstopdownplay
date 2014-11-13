@@ -87,9 +87,9 @@ var Scene = (function () {
 
   Scene.prototype.render = function () {
     requestAnimationFrame(this.render.bind(this));
-    
+
     var vel = this.player.mesh.getLinearVelocity();
-    
+
     if (this.mouseControls.isDown) {
       var coords = this.mouseControls.screenCoords;
       var vector = new THREE.Vector3();
