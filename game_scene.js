@@ -1,8 +1,5 @@
-var Scene = (function () {
-  var notMovingVector = new THREE.Vector3(0, 0, 0);
-  var MAX_VEL = 5;
-  var MAX_VEL_NEG = -MAX_VEL;
-  function Scene () {
+var GameScene = (function () {
+  function GameScene () {
     var container = document.getElementById("screen");
     this.scene = new Physijs.Scene();
 
@@ -16,10 +13,9 @@ var Scene = (function () {
     this.bindEvents();
 
     this.addObjects();
-    this.render();
   }
 
-  Scene.prototype.addCube = function () {
+  GameScene.prototype.addCube = function () {
     var size = Math.ceil(Math.random() * 3);
     var geo = new THREE.BoxGeometry(size, size, size);
     var mat = Physijs.createMaterial(
@@ -36,7 +32,7 @@ var Scene = (function () {
     this.scene.add(cube);
   }
 
-  Scene.prototype.addLighting = function () {
+  GameScene.prototype.addLighting = function () {
     this.cameraLight = new THREE.SpotLight(0xffffff);
     this.cameraLight.castShadow = true;
     this.cameraLight.position.set(0, 0, 0);
@@ -47,7 +43,7 @@ var Scene = (function () {
     this.scene.add(this.spotlightTarget);
   };
 
-  Scene.prototype.addObjects = function () {
+  GameScene.prototype.addObjects = function () {
     this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 2000);
     this.camera.position.set(0, 20, 0);
 
@@ -73,7 +69,7 @@ var Scene = (function () {
     this.scene.add(this.camera);
   }
 
-  Scene.prototype.bindEvents = function () {
+  GameScene.prototype.bindEvents = function () {
     var _this = this;
     window.addEventListener("resize", function () {
       _this.camera.aspect = window.innerWidth / window.innerHeight;
@@ -85,38 +81,10 @@ var Scene = (function () {
     this.mouseControls.bindTouch();
   };
 
-  Scene.prototype.render = function () {
+  GameScene.prototype.render = function () {
     requestAnimationFrame(this.render.bind(this));
 
-    var vel = this.player.mesh.getLinearVelocity();
-
-    if (this.mouseControls.isDown) {
-      var coords = this.mouseControls.screenCoords;
-      var vector = new THREE.Vector3();
-
-      vector.set(
-        ( this.mouseControls.screenCoords.x / window.innerWidth ) * 2 - 1,
-        - ( this.mouseControls.screenCoords.y / window.innerHeight ) * 2 + 1,
-        0.5
-      );
-
-      vector.unproject(this.camera);
-
-      var dir = vector.sub(this.player.mesh.position).normalize();
-      var distance = - this.player.mesh.position.y / dir.y;
-      dir.multiplyScalar(distance);
-      var xVel = dir.x * -40, zVel = dir.z * -40;
-
-      if (xVel > MAX_VEL) xVel = MAX_VEL;
-      if (zVel > MAX_VEL) zVel = MAX_VEL;
-      if (xVel < MAX_VEL_NEG) xVel = MAX_VEL_NEG;
-      if (zVel < MAX_VEL_NEG) zVel = MAX_VEL_NEG;
-
-      this.player.mesh.setLinearVelocity(new THREE.Vector3(xVel, 0, zVel));
-    }
-    else {
-      this.player.mesh.setLinearVelocity(notMovingVector);
-    }
+    this.player.update();
 
     var lookAtPos = this.player.mesh.position.clone();
     //this.camera.position.set(lookAtPos.x, this.camera.position.y, lookAtPos.z);
@@ -129,5 +97,5 @@ var Scene = (function () {
     this.renderer.render(this.scene, this.camera);
   }
 
-  return Scene;
+  return GameScene;
 })();

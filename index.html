@@ -14,7 +14,7 @@
     <script src="lib/physi.js"></script>
     <script src="key_controls.js"></script>
     <script src="mouse_controls.js"></script>
-    <script src="scene.js"></script>
+    <script src="game_scene.js"></script>
     <script src="player.js"></script>
   </head>
   <body>
@@ -22,7 +22,8 @@
     <script>
       Physijs.scripts.worker = './lib/physijs_worker.js';
       Physijs.scripts.ammo = './ammo.js';
-      var scene = new Scene();
+      window.scene = new GameScene();
+      window.scene.render();
     </script>
   </body>
 
