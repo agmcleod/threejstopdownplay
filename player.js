@@ -32,14 +32,29 @@ var Player = (function () {
 
       vector.unproject(scene.camera);
 
-      var dir = vector.sub(this.mesh.position).normalize();
-      // var distance = - this.mesh.position.y / dir.y;
-      // dir.multiplyScalar(distance);
-
-      var xVel = dir.x * 100, zVel = dir.z * 100;
-      console.log(dir);
+      var dir = vector.sub(this.mesh.position);
+      var xabs = Math.abs(dir.x);
+      var zabs = Math.abs(dir.z);
+      var xVel, zVel;
+      if (xabs > zabs) {
+        var ratio = zabs / xabs;
+        xVel = (dir.x >= 0 ? 1 : -1);
+        zVel = ratio * (dir.z >= 0 ? 1 : -1);
+      }
+      else if (zabs > xabs) {
+        var ratio = xabs / zabs;
+        xVel = ratio * (dir.x >= 0 ? 1 : -1);
+        zVel = (dir.z >= 0 ? 1 : -1);
+      }
+      else {
+        xVel = (dir.x >= 0 ? 1 : -1);
+        zVel = (dir.z >= 0 ? 1 : -1);
+      }
+      xVel *= 50;
+      zVel *= 50;
 
       this.mesh.setLinearVelocity(new THREE.Vector3(xVel, 0, zVel));
+      this.mesh.__dirtyPosition = true;
     }
     else {
       this.mesh.setLinearVelocity(notMovingVector);
