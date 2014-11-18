@@ -26,35 +26,18 @@ var Player = (function () {
 
       vector.set(
         ( scene.mouseControls.screenCoords.x / window.innerWidth ) * 2 - 1,
-        - ( scene.mouseControls.screenCoords.y / window.innerHeight ) * 2 + 1,
-        0.5
+        0.5,
+        - ( scene.mouseControls.screenCoords.y / window.innerHeight ) * 2 + 1
       );
-
       vector.unproject(scene.camera);
 
-      var dir = vector.sub(this.mesh.position);
-      var xabs = Math.abs(dir.x);
-      var zabs = Math.abs(dir.z);
-      var xVel, zVel;
-      if (xabs > zabs) {
-        var ratio = zabs / xabs;
-        xVel = (dir.x >= 0 ? 1 : -1);
-        zVel = ratio * (dir.z >= 0 ? 1 : -1);
-      }
-      else if (zabs > xabs) {
-        var ratio = xabs / zabs;
-        xVel = ratio * (dir.x >= 0 ? 1 : -1);
-        zVel = (dir.z >= 0 ? 1 : -1);
-      }
-      else {
-        xVel = (dir.x >= 0 ? 1 : -1);
-        zVel = (dir.z >= 0 ? 1 : -1);
-      }
-      xVel *= 50;
-      zVel *= 50;
+      var p1 = this.mesh.position;
+      var p2 = vector;
+      var angle = Math.atan2(p1.z - p2.z, p1.x - p2.x);
+      var velX = Math.cos(angle) * 20;
+      var velZ = Math.sin(angle) * 20;
 
-      this.mesh.setLinearVelocity(new THREE.Vector3(xVel, 0, zVel));
-      this.mesh.__dirtyPosition = true;
+      this.mesh.setLinearVelocity(new THREE.Vector3(-velX, 0, -velZ));
     }
     else {
       this.mesh.setLinearVelocity(notMovingVector);
