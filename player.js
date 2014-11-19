@@ -37,7 +37,7 @@ var Player = (function () {
       var velX = Math.sin(angle) * 20;
       var velZ = Math.cos(angle) * 20;
 
-      console.log(velX, velZ);
+      console.log(vector.x, vector.z);
 
       this.mesh.setLinearVelocity(new THREE.Vector3(velX, 0, velZ));
     }

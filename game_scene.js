@@ -27,7 +27,7 @@ var GameScene = (function () {
     cube.castShadow = true;
 
     cube.position.x = -35 + Math.round(Math.random() * 70);
-    cube.position.z = - 35 + Math.round(Math.random() * 70);
+    cube.position.z = -35 + Math.round(Math.random() * 70);
     cube.position.y = size / 2;
     this.scene.add(cube);
   }
