@@ -26,18 +26,16 @@ var Player = (function () {
 
       vector.set(
         ( scene.mouseControls.screenCoords.x / window.innerWidth ) * 2 - 1,
-        0.5,
-        - ( scene.mouseControls.screenCoords.y / window.innerHeight ) * 2 + 1
+        - ( scene.mouseControls.screenCoords.y / window.innerHeight ) * 2 + 1,
+        0.5
       );
       vector.unproject(scene.camera);
 
       var p1 = this.mesh.position;
       var p2 = vector;
-      var angle = Math.atan2(p2.x - p1.x, p2.z - p1.z);
-      var velX = Math.sin(angle) * 20;
-      var velZ = Math.cos(angle) * 20;
-
-      console.log(vector.x, vector.z);
+      var angle = Math.atan2(p2.y - p1.y, p2.x - p1.x);
+      var velX = Math.cos(angle) * 20;
+      var velZ = Math.sin(angle) * 20;
 
       this.mesh.setLinearVelocity(new THREE.Vector3(velX, 0, velZ));
     }
