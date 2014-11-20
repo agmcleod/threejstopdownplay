@@ -37,8 +37,6 @@ var Player = (function () {
       var p1 = this.mesh.position;
       var p2 = scene.camera.position.clone().add(dir.multiplyScalar(distance));
 
-      console.log(p2.x - p1.x, p2.y - p1.y, p2.z - p1.z);
-
       var angle = Math.atan2(p2.z - p1.z, p2.x - p1.x);
       var velX = Math.cos(angle) * 20;
       var velZ = Math.sin(angle) * 20;

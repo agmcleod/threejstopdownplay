@@ -58,9 +58,6 @@ var GameScene = (function () {
 
     this.addLighting();
 
-    var spotLightHelper = new THREE.SpotLightHelper(this.cameraLight, 50);
-    this.scene.add(spotLightHelper);
-
     for (var i = 0; i < 40; i++) {
       this.addCube();
     }
@@ -87,9 +84,8 @@ var GameScene = (function () {
     this.player.update();
 
     var lookAtPos = this.player.mesh.position.clone();
-    //this.camera.position.set(lookAtPos.x, this.camera.position.y, lookAtPos.z);
-    lookAtPos.y = 0;
-    //this.camera.lookAt(lookAtPos);
+    this.camera.position.set(lookAtPos.x, this.camera.position.y, lookAtPos.z);
+    this.camera.lookAt(lookAtPos);
     this.spotlightTarget.position.set(lookAtPos.x, lookAtPos.y, lookAtPos.z);
 
     this.scene.simulate();
