@@ -8,7 +8,6 @@ var Laser = (function () {
     this.mesh.rotation.y += angle;
     this.velX = velX;
     this.velZ = velZ;
-    console.log(velX, velZ);
   }
 
   Laser.prototype.update = function () {

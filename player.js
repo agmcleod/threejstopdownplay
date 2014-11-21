@@ -44,7 +44,7 @@ var Player = (function () {
 
       this.mesh.setLinearVelocity(new THREE.Vector3(velX, 0, velZ));
 
-      if (scene.mouseControls.secondTouch && scene.timestamp - this.lastLaserTime > 500) {
+      if ((scene.mouseControls.secondTouch || scene.keyControls.isPressed("SPACE")) && scene.timestamp - this.lastLaserTime > 200) {
         this.lastLaserTime = scene.timestamp;
         scene.addLaser(new Laser(angle, Math.cos(angle), Math.sin(angle), this.mesh.position));
       }

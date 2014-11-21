@@ -83,6 +83,9 @@ var GameScene = (function () {
 
     this.mouseControls = new MouseControls();
     this.mouseControls.bindTouch();
+
+    this.keyControls = new KeyControls();
+    this.keyControls.bindKey("SPACE");
   };
 
   GameScene.prototype.render = function (timestamp) {
