@@ -97,7 +97,12 @@ var GameScene = (function () {
     this.spotlightTarget.position.set(lookAtPos.x, lookAtPos.y, lookAtPos.z);
 
     for (var i = this.lasers.length - 1; i >= 0; i--) {
-      this.lasers[i].update();
+      var laser = this.lasers[i]
+      laser.update();
+      if (laser.mesh.position.x > 200 || laser.mesh.position.x < -200 || laser.mesh.position.z > 200 || laser.mesh.position.z < -200) {
+        this.scene.remove(laser.mesh);
+        this.lasers.splice(i, 1);
+      }
     };
 
     this.scene.simulate();
