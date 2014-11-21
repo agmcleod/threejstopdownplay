@@ -10,6 +10,8 @@ var GameScene = (function () {
 
     container.appendChild(renderer.domElement);
 
+    this.lasers = [];
+
     this.bindEvents();
 
     this.addObjects();
@@ -31,6 +33,11 @@ var GameScene = (function () {
     cube.position.y = size / 2;
     this.scene.add(cube);
   }
+
+  GameScene.prototype.addLaser = function (laser) {
+    this.lasers.push(laser);
+    this.scene.add(laser.mesh);
+  };
 
   GameScene.prototype.addLighting = function () {
     this.cameraLight = new THREE.SpotLight(0xffffff);
@@ -78,8 +85,9 @@ var GameScene = (function () {
     this.mouseControls.bindTouch();
   };
 
-  GameScene.prototype.render = function () {
+  GameScene.prototype.render = function (timestamp) {
     requestAnimationFrame(this.render.bind(this));
+    this.timestamp = timestamp;
 
     this.player.update();
 
@@ -87,6 +95,10 @@ var GameScene = (function () {
     this.camera.position.set(lookAtPos.x, this.camera.position.y, lookAtPos.z);
     this.camera.lookAt(lookAtPos);
     this.spotlightTarget.position.set(lookAtPos.x, lookAtPos.y, lookAtPos.z);
+
+    for (var i = this.lasers.length - 1; i >= 0; i--) {
+      this.lasers[i].update();
+    };
 
     this.scene.simulate();
 

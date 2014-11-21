@@ -71,6 +71,12 @@
     window.addEventListener(activeEventList[POINTER_DOWN], function (e) {
       e.preventDefault();
       _this.isDown = true;
+      if (e.touches && e.touches[1]) {
+        _this.secondTouch = true;
+      }
+      else {
+        _this.secondTouch = false;
+      }
     });
 
     window.addEventListener(activeEventList[POINTER_MOVE], function (e) {
@@ -87,7 +93,9 @@
 
     window.addEventListener(activeEventList[POINTER_UP], function (e) {
       e.preventDefault();
-      _this.isDown = false;
+      if (!e.touches || !e.touches[0]) {
+        _this.isDown = false;
+      }
     });
   }
 

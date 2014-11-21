@@ -16,6 +16,7 @@
     <script src="mouse_controls.js"></script>
     <script src="game_scene.js"></script>
     <script src="player.js"></script>
+    <script src="laser.js"></script>
   </head>
   <body>
     <div id="screen"></div>
@@ -23,7 +24,7 @@
       Physijs.scripts.worker = './lib/physijs_worker.js';
       Physijs.scripts.ammo = './ammo.js';
       window.scene = new GameScene();
-      window.scene.render();
+      requestAnimationFrame(scene.render.bind(scene));
     </script>
   </body>
 

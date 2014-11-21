@@ -17,6 +17,7 @@ var Player = (function () {
       _this.mesh.setLinearVelocity(zero);
       _this.mesh.setAngularVelocity(zero);
     });
+    this.lastLaserTime = 0;
   }
 
   Player.prototype.update = function () {
@@ -42,6 +43,11 @@ var Player = (function () {
       var velZ = Math.sin(angle) * 20;
 
       this.mesh.setLinearVelocity(new THREE.Vector3(velX, 0, velZ));
+
+      if (scene.mouseControls.secondTouch && scene.timestamp - this.lastLaserTime > 500) {
+        this.lastLaserTime = scene.timestamp;
+        scene.addLaser(new Laser(angle, Math.cos(angle), Math.sin(angle), this.mesh.position));
+      }
     }
     else {
       this.mesh.setLinearVelocity(notMovingVector);
