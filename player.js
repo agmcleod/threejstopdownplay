@@ -1,5 +1,6 @@
 var Player = (function () {
   var notMovingVector = new THREE.Vector3(0, 0, 0);
+  var target = new THREE.Vector3(0, 0, 0);
   function Player (parent) {
     var geometry = new THREE.BoxGeometry(1, 1, 1);
 
@@ -23,25 +24,19 @@ var Player = (function () {
   Player.prototype.update = function () {
     if (scene.mouseControls.isDown) {
       var coords = scene.mouseControls.screenCoords;
-      var vector = new THREE.Vector3();
-
-      vector.set(
-        ( scene.mouseControls.screenCoords.x / window.innerWidth ) * 2 - 1,
-        - ( scene.mouseControls.screenCoords.y / window.innerHeight ) * 2 + 1,
-        0.5
-      );
-      vector.unproject(scene.camera);
-
-      var dir = vector.sub(scene.camera.position).normalize();
-      var distance = - scene.camera.position.y / dir.y;
-
-      var p1 = this.mesh.position;
-      var p2 = scene.camera.position.clone().add(dir.multiplyScalar(distance));
+      var p2 = scene.mouseControls.coordsAsVector(coords.x, coords.y, scene.camera, target);
+      var p1;
+      if (!scene.isMobile) {
+        p1 = this.mesh.position;
+      }
+      else {
+        p1 = scene.mouseControls.moveOrigin;
+        console.log(target.x, target.z, p1.x, p1.z);
+      }
 
       var angle = Math.atan2(p2.z - p1.z, p2.x - p1.x);
       var velX = Math.cos(angle) * 20;
       var velZ = Math.sin(angle) * 20;
-
       this.mesh.setLinearVelocity(new THREE.Vector3(velX, 0, velZ));
 
       if ((scene.mouseControls.secondTouch || scene.keyControls.isPressed("SPACE")) && scene.timestamp - this.lastLaserTime > 200) {

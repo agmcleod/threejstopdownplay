@@ -15,6 +15,25 @@ var GameScene = (function () {
     this.bindEvents();
 
     this.addObjects();
+    var ua = window.navigator.userAgent;
+    // iOS Device ?
+    var iOS = ua.match(/iPhone|iPad|iPod/i) || false;
+    // Android Device ?
+    var android = ua.match(/Android/i) || false;
+    var android2 = ua.match(/Android 2/i) || false;
+    // Windows Device ?
+    var wp = ua.match(/Windows Phone/i) || false;
+    // Kindle device ?
+    var BlackBerry = ua.match(/BlackBerry/i) || false;
+    // Kindle device ?
+    var Kindle = ua.match(/Kindle|Silk.*Mobile Safari/i) || false;
+    this.isMobile = ua.match(/Mobi/i) ||
+      iOS ||
+      android ||
+      wp ||
+      BlackBerry ||
+      Kindle ||
+      iOS || false;
   }
 
   GameScene.prototype.addCube = function () {

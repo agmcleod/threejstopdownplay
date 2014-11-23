@@ -63,6 +63,7 @@
 
   function MouseControls () {
     this.screenCoords = { x: null, y: null };
+    this.moveOrigin = new THREE.Vector3();
     this.isDown = false;
   }
 
@@ -71,11 +72,16 @@
     window.addEventListener(activeEventList[POINTER_DOWN], function (e) {
       e.preventDefault();
       _this.isDown = true;
-      if (e.touches && e.touches[1]) {
-        _this.secondTouch = true;
-      }
-      else {
-        _this.secondTouch = false;
+      if (e.touches) {
+        if (e.touches[1]) {
+          _this.secondTouch = true;
+        }
+        else {
+          var x = e.touches[0].clientX;
+          var y = e.touches[0].clientY;
+          _this.coordsAsVector(x, y, scene.camera, _this.moveOrigin);
+          _this.secondTouch = false;
+        }
       }
     });
 
@@ -97,6 +103,20 @@
         _this.isDown = false;
       }
     });
+  }
+
+  MouseControls.prototype.coordsAsVector = function (x, y, camera, target) {
+    var vector = new THREE.Vector3();
+    vector.set(
+      ( x / window.innerWidth ) * 2 - 1,
+      - ( y / window.innerHeight ) * 2 + 1,
+      0.5
+    );
+
+    vector.unproject(camera);
+    var dir = vector.sub(camera.position).normalize();
+    var distance = - camera.position.y / dir.y;
+    return target.set(camera.position.x, camera.position.y, camera.position.z).add(dir.multiplyScalar(distance));
   }
 
   MouseControls.prototype.mouseDown = function () {
