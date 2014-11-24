@@ -63,7 +63,7 @@
 
   function MouseControls () {
     this.screenCoords = { x: null, y: null };
-    this.moveOrigin = new THREE.Vector3();
+    this.moveOrigin = { x: null, y: null };
     this.isDown = false;
   }
 
@@ -79,7 +79,8 @@
         else {
           var x = e.touches[0].clientX;
           var y = e.touches[0].clientY;
-          _this.coordsAsVector(x, y, scene.camera, _this.moveOrigin);
+          _this.moveOrigin.x = x;
+          _this.moveOrigin.y = y;
           _this.secondTouch = false;
         }
       }

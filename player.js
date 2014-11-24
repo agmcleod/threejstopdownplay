@@ -1,6 +1,7 @@
 var Player = (function () {
   var notMovingVector = new THREE.Vector3(0, 0, 0);
   var target = new THREE.Vector3(0, 0, 0);
+  var target2 = new THREE.Vector3(0, 0, 0);
   function Player (parent) {
     var geometry = new THREE.BoxGeometry(1, 1, 1);
 
@@ -30,10 +31,9 @@ var Player = (function () {
         p1 = this.mesh.position;
       }
       else {
-        p1 = scene.mouseControls.moveOrigin;
+        var c2 = scene.mouseControls.moveOrigin;
+        p1 = scene.mouseControls.coordsAsVector(c2.x, c2.y, scene.camera, target2);
       }
-
-      console.log(p1.x, p1.z, p2.x, p2.z);
 
       var angle = Math.atan2(p2.z - p1.z, p2.x - p1.x);
       var velX = Math.cos(angle) * 20;
