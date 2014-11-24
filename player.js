@@ -31,8 +31,9 @@ var Player = (function () {
       }
       else {
         p1 = scene.mouseControls.moveOrigin;
-        console.log(target.x, target.z, p1.x, p1.z);
       }
+
+      console.log(p1.x, p1.z, p2.x, p2.z);
 
       var angle = Math.atan2(p2.z - p1.z, p2.x - p1.x);
       var velX = Math.cos(angle) * 20;
