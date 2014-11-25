@@ -51,7 +51,11 @@ var GameScene = (function () {
     cube.position.z = -35 + Math.round(Math.random() * 70);
     cube.position.y = size / 2;
     this.scene.add(cube);
-  }
+  };
+
+  GameScene.prototype.addEnemy = function () {
+    new Enemy(this.scene, 3, 3);
+  };
 
   GameScene.prototype.addLaser = function (laser) {
     this.lasers.push(laser);
@@ -90,6 +94,8 @@ var GameScene = (function () {
 
     this.player = new Player(this.scene);
     this.scene.add(this.camera);
+
+    this.addEnemy();
   }
 
   GameScene.prototype.bindEvents = function () {
