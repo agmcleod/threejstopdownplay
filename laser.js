@@ -5,7 +5,7 @@ var Laser = (function () {
 
     this.mesh = new THREE.Mesh(geometry, mat);
     this.mesh.position.set(playerPos.x, playerPos.y, playerPos.z);
-    this.mesh.rotation.y += angle;
+    this.mesh.rotation.y -= angle;
     this.velX = velX;
     this.velZ = velZ;
   }
