@@ -59,8 +59,9 @@ var GameScene = (function () {
   };
 
   GameScene.prototype.addLaser = function (laser) {
-    this.lasers.push(laser);
     this.scene.add(laser.mesh);
+    laser.mesh.applyCentralImpulse(laser.impulseVector);
+    this.lasers.push(laser.mesh);
   };
 
   GameScene.prototype.addLighting = function () {
@@ -146,6 +147,15 @@ var GameScene = (function () {
     this.keyControls.bindKey("SPACE");
   }
 
+  GameScene.prototype.removeLaser = function(laserMesh) {
+    this.removeObject(laserMesh);
+    this.lasers.splice(this.lasers.indexOf(laserMesh), 1);
+  }
+
+  GameScene.prototype.removeObject = function(enemy) {
+    this.scene.remove(enemy);
+  }
+
   GameScene.prototype.render = function (timestamp) {
     requestAnimationFrame(this.render.bind(this));
     this.timestamp = timestamp;
@@ -157,18 +167,18 @@ var GameScene = (function () {
     this.camera.lookAt(lookAtPos);
     this.spotlightTarget.position.set(lookAtPos.x, lookAtPos.y, lookAtPos.z);
 
-    for (var i = this.lasers.length - 1; i >= 0; i--) {
-      var laser = this.lasers[i]
-      laser.update();
-      if (laser.mesh.position.x > 200 || laser.mesh.position.x < -200 || laser.mesh.position.z > 200 || laser.mesh.position.z < -200) {
-        this.scene.remove(laser.mesh);
-        this.lasers.splice(i, 1);
-      }
-    }
-
     this.scene.simulate();
 
     this.renderer.render(this.scene, this.camera);
+
+    for (var i = this.lasers.length - 1; i >= 0; i--) {
+      var laserMesh = this.lasers[i];
+      var vel = laserMesh.getLinearVelocity();
+      if (laserMesh.position.y < 0.5 && vel.x === 0 && vel.y === 0 && vel.z === 0) {
+        this.scene.remove(laserMesh);
+        this.lasers.splice(i, 1);
+      }
+    }
   }
 
   return GameScene;
