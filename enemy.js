@@ -4,8 +4,8 @@ var Enemy = (function () {
 
     var mat = Physijs.createMaterial(
       new THREE.MeshPhongMaterial({ color: 0xff0000 }),
-      8,
-      10
+      0.8,
+      0
     );
 
     this.mesh = new Physijs.BoxMesh(geometry, mat);
