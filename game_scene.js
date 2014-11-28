@@ -15,6 +15,7 @@ var GameScene = (function () {
     this.bindEvents();
 
     this.addObjects();
+    this.addWalls();
     var ua = window.navigator.userAgent;
     // iOS Device ?
     var iOS = ua.match(/iPhone|iPad|iPod/i) || false;
@@ -47,14 +48,14 @@ var GameScene = (function () {
     var cube = new Physijs.BoxMesh(geo, mat, 0);
     cube.castShadow = true;
 
-    cube.position.x = -35 + Math.round(Math.random() * 72);
-    cube.position.z = -35 + Math.round(Math.random() * 72);
+    cube.position.x = -30 + Math.round(Math.random() * 60);
+    cube.position.z = -30 + Math.round(Math.random() * 60);
     cube.position.y = size / 2;
     this.scene.add(cube);
   };
 
   GameScene.prototype.addEnemy = function () {
-    new Enemy(this.scene, -30 + Math.round(Math.random() * 75), -30 + Math.round(Math.random() * 75));
+    new Enemy(this.scene, -30 + Math.round(Math.random() * 60), -30 + Math.round(Math.random() * 60));
   };
 
   GameScene.prototype.addLaser = function (laser) {
@@ -100,6 +101,36 @@ var GameScene = (function () {
     }
   }
 
+  GameScene.prototype.addWalls = function () {
+    var wallGeom = new THREE.BoxGeometry(70, 5, 1);
+    var wallMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff });
+    var wallOne = new Physijs.BoxMesh(wallGeom, wallMaterial, 0);
+
+    wallOne.position.set(1, 2.5, -35);
+    this.scene.add(wallOne);
+
+    wallGeom = new THREE.BoxGeometry(70, 5, 1);
+    wallMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff });
+    var wallTwo = new Physijs.BoxMesh(wallGeom, wallMaterial, 0);
+
+    wallTwo.position.set(1, 2.5, 35);
+    this.scene.add(wallTwo);
+
+    wallGeom = new THREE.BoxGeometry(1, 5, 70);
+    wallMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff });
+    var wallThree = new Physijs.BoxMesh(wallGeom, wallMaterial, 0);
+
+    wallThree.position.set(35, 2.5, 1);
+    this.scene.add(wallThree);
+
+    wallGeom = new THREE.BoxGeometry(1, 5, 70);
+    wallMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff });
+    var wallFour = new Physijs.BoxMesh(wallGeom, wallMaterial, 0);
+
+    wallFour.position.set(-35, 2.5, 1);
+    this.scene.add(wallFour);
+  }
+
   GameScene.prototype.bindEvents = function () {
     var _this = this;
     window.addEventListener("resize", function () {
@@ -113,7 +144,7 @@ var GameScene = (function () {
 
     this.keyControls = new KeyControls();
     this.keyControls.bindKey("SPACE");
-  };
+  }
 
   GameScene.prototype.render = function (timestamp) {
     requestAnimationFrame(this.render.bind(this));
@@ -133,7 +164,7 @@ var GameScene = (function () {
         this.scene.remove(laser.mesh);
         this.lasers.splice(i, 1);
       }
-    };
+    }
 
     this.scene.simulate();
 
