@@ -46,6 +46,7 @@ var Player = (function () {
       }
     }
     else {
+      notMovingVector.y = this.mesh.getLinearVelocity().y;
       this.mesh.setLinearVelocity(notMovingVector);
     }
   }

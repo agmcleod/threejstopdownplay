@@ -9,8 +9,12 @@ var Enemy = (function () {
     );
 
     this.mesh = new Physijs.BoxMesh(geometry, mat);
-    this.mesh.position.set(x, 0.5, z);
-
+    this.mesh.position.set(x, 1, z);
+    var zero = new THREE.Vector3(0, 0, 0);
+    this.mesh.addEventListener('collision', function (other_object, relative_velocity, relative_rotation, contact_normal) {
+      _this.mesh.setLinearVelocity(zero);
+      _this.mesh.setAngularVelocity(zero);
+    });
     parent.add(this.mesh);
   }
 

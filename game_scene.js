@@ -47,14 +47,14 @@ var GameScene = (function () {
     var cube = new Physijs.BoxMesh(geo, mat, 0);
     cube.castShadow = true;
 
-    cube.position.x = -35 + Math.round(Math.random() * 70);
-    cube.position.z = -35 + Math.round(Math.random() * 70);
+    cube.position.x = -35 + Math.round(Math.random() * 72);
+    cube.position.z = -35 + Math.round(Math.random() * 72);
     cube.position.y = size / 2;
     this.scene.add(cube);
   };
 
   GameScene.prototype.addEnemy = function () {
-    new Enemy(this.scene, 3, 3);
+    new Enemy(this.scene, -30 + Math.round(Math.random() * 75), -30 + Math.round(Math.random() * 75));
   };
 
   GameScene.prototype.addLaser = function (laser) {
@@ -95,7 +95,9 @@ var GameScene = (function () {
     this.player = new Player(this.scene);
     this.scene.add(this.camera);
 
-    this.addEnemy();
+    for (var i = 0; i < 20; i++) {
+      this.addEnemy();
+    }
   }
 
   GameScene.prototype.bindEvents = function () {
