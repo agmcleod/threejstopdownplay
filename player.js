@@ -24,7 +24,7 @@ var Player = (function () {
 
   Player.prototype.update = function () {
     if (scene.mouseControls.isDown) {
-      var coords = scene.mouseControls.screenCoords;
+      var coords = scene.mouseControls.touches[0];
       var p2 = scene.mouseControls.coordsAsVector(coords.x, coords.y, scene.camera, target);
       var p1;
       if (!scene.isMobile) {
@@ -40,7 +40,7 @@ var Player = (function () {
       var velZ = Math.sin(angle) * 20;
       this.mesh.setLinearVelocity(new THREE.Vector3(velX, 0, velZ));
 
-      if ((scene.mouseControls.secondTouch || scene.keyControls.isPressed("SPACE")) && scene.timestamp - this.lastLaserTime > 200) {
+      if ((scene.mouseControls.touches[1].down || scene.keyControls.isPressed("SPACE")) && scene.timestamp - this.lastLaserTime > 200) {
         this.lastLaserTime = scene.timestamp;
         scene.addLaser(new Laser(angle, Math.cos(angle), Math.sin(angle), this.mesh.position));
       }

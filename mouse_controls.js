@@ -62,9 +62,9 @@
   }
 
   function MouseControls () {
-    this.screenCoords = { x: null, y: null };
     this.moveOrigin = { x: null, y: null };
     this.isDown = false;
+    this.touches = [{x:0,y:0,down: false}, {x:0,y:0, down: false}];
   }
 
   MouseControls.prototype.bindTouch = function () {
@@ -72,29 +72,56 @@
     window.addEventListener(activeEventList[POINTER_DOWN], function (e) {
       e.preventDefault();
       _this.isDown = true;
+      if (e.touches && e.touches[0].x < window.innerWidth / 2) {
+        var x = e.touches[0].clientX;
+        var y = e.touches[0].clientY;
+        _this.moveOrigin.x = x;
+        _this.moveOrigin.y = y;
+      }
+
       if (e.touches) {
-        if (e.touches[1]) {
-          _this.secondTouch = true;
+        if (_this.touches[0]) {
+          _this.touches[0].down = true;
         }
-        else {
-          var x = e.touches[0].clientX;
-          var y = e.touches[0].clientY;
-          _this.moveOrigin.x = x;
-          _this.moveOrigin.y = y;
-          _this.secondTouch = false;
+        if (_this.touches[1]) {
+          _this.touches[1].down = true;
         }
       }
     });
 
     window.addEventListener(activeEventList[POINTER_MOVE], function (e) {
       if (e.touches) {
-        var t = e.touches[0];
-        _this.screenCoords.x = t.clientX;
-        _this.screenCoords.y = t.clientY;
+        var t1 = e.touches[0];
+        var t2 = e.touches[1];
+        if (t2) {
+          var leftTouch, rightTouch;
+          if (t1.clientX < window.innerWidth / 2) {
+            leftTouch = t1;
+          }
+          else {
+            leftTouch = t2;
+          }
+
+          if (t2.clientX > window.innerWidth / 2) {
+            rightTouch = t2;
+          }
+          else {
+            rightTouch = t1;
+          }
+
+          _this.touches[0].x = leftTouch.clientX;
+          _this.touches[0].y = leftTouch.clientY;
+          _this.touches[1].x = rightTouch.clientX;
+          _this.touches[1].y = rightTouch.clientY;
+        }
+        else {
+          _this.touches[0].x = t1.clientX;
+          _this.touches[0].y = t1.clientY;
+        }
       }
       else {
-        _this.screenCoords.x = e.clientX;
-        _this.screenCoords.y = e.clientY;
+        _this.touches[0].x = e.clientX;
+        _this.touches[0].y = e.clientY;
       }
     });
 
@@ -102,6 +129,17 @@
       e.preventDefault();
       if (!e.touches || !e.touches[0]) {
         _this.isDown = false;
+        _this.touches[0].down = false;
+        _this.touches[1].down = false;
+      }
+
+      if (e.touches) {
+        if (!_this.touches[0]) {
+          _this.touches[0].down = false;
+        }
+        if (!_this.touches[1]) {
+          _this.touches[1].down = false;
+        }
       }
     });
   }

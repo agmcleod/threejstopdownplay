@@ -2,7 +2,7 @@ var Laser = (function () {
   function Laser (angle, velX, velZ, playerPos) {
     var geometry = new THREE.BoxGeometry(1.5, 0.5, 0.5);
     var mat = Physijs.createMaterial(
-      new THREE.MeshPhongMaterial({ color: 0x00ff00 }),
+      new THREE.MeshLambertMaterial({ color: 0x00ff00 }),
       1,
       0.2
     );
