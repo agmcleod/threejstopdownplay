@@ -46,36 +46,30 @@
   function resolveTouchesToIntent (touches, leftTouch, rightTouch) {
     var t1 = touches[0];
     var t2 = touches[1];
-    var idx;
     if (t1 && t2) {
       if (t1.clientX < window.innerWidth / 2) {
         leftTouch = t1;
         rightTouch = t2;
-        idx = 0;
       }
       else {
         leftTouch = t2;
         rightTouch = t1;
-        idx = 1;
       }
     }
     else if (t1) {
       if (t1.clientX < window.innerWidth / 2) {
         leftTouch = t1;
         rightTouch = null;
-        idx = 0;
       }
       else {
         leftTouch = null;
         rightTouch = t1;
-        idx = 1;
       }
     }
 
     return {
       leftTouch: leftTouch,
-      rightTouch: rightTouch,
-      leftTouchNumber: idx
+      rightTouch: rightTouch
     };
   }
 
@@ -110,8 +104,7 @@
       _this.isDown = true;
       if (e.touches) {
         var res = resolveTouchesToIntent(e.touches);
-
-        if (res.leftTouch) {
+        if (res.leftTouch && e.touches.length === 1) {
           _this.moveOrigin.x = res.leftTouch.clientX;
           _this.moveOrigin.y = res.leftTouch.clientY;
           _this.touches[0].down = true;
@@ -127,8 +120,8 @@
       if (e.touches) {
         var res = resolveTouchesToIntent(e.touches);
         if (res.leftTouch) {
-          _this.touches[res.leftTouchNumber].x = res.leftTouch.clientX;
-          _this.touches[res.leftTouchNumber].y = res.leftTouch.clientY;
+          _this.touches[0].x = res.leftTouch.clientX;
+          _this.touches[0].y = res.leftTouch.clientY;
         }
       }
       else {
