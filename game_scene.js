@@ -1,4 +1,9 @@
 var GameScene = (function () {
+
+  function getRandomCoordinate () {
+    return  -30 + Math.round(Math.random() * 60);
+  }
+
   function GameScene () {
     var container = document.getElementById("screen");
     this.scene = new Physijs.Scene();
@@ -37,7 +42,7 @@ var GameScene = (function () {
       iOS || false;
   }
 
-  GameScene.prototype.addCube = function () {
+  GameScene.prototype.addCube = function (cubeTrackArray) {
     var size = Math.ceil(Math.random() * 3);
     var geo = new THREE.BoxGeometry(size, size, size);
     var mat = Physijs.createMaterial(
@@ -48,10 +53,33 @@ var GameScene = (function () {
     var cube = new Physijs.BoxMesh(geo, mat, 0);
     cube.castShadow = true;
 
-    cube.position.x = -30 + Math.round(Math.random() * 60);
-    cube.position.z = -30 + Math.round(Math.random() * 60);
+    var attempts = 0;
+
+    while (!validCoords) {
+      var validCoords = true;
+
+      for (var i = cubeTrackArray.length - 1; i >= 0; i--) {
+        var otherCube = cubeTrackArray[i];
+        var diff = (size + otherCube.size * 0.2);
+        if (Math.abs(cube.position.x - otherCube.x) < diff || Math.abs(cube.position.z - otherCube.z) < diff) {
+          validCoords = false;
+          break;
+        }
+      }
+
+      cube.position.x = getRandomCoordinate();
+      cube.position.z = getRandomCoordinate();
+      attempts++;
+
+      if (attempts > 10) {
+        return;
+      }
+    }
+
+
     cube.position.y = size / 2;
     this.scene.add(cube);
+    cubeTrackArray.push({ x: cube.position.x, z: cube.position.z, size: size });
   };
 
   GameScene.prototype.addEnemy = function () {
@@ -61,7 +89,6 @@ var GameScene = (function () {
   GameScene.prototype.addLaser = function (laser) {
     this.scene.add(laser.mesh);
     laser.mesh.applyCentralImpulse(laser.impulseVector);
-    this.lasers.push(laser.mesh);
   };
 
   GameScene.prototype.addLighting = function () {
@@ -89,9 +116,9 @@ var GameScene = (function () {
     this.camera.lookAt(this.scene.position);
 
     this.addLighting();
-
-    for (var i = 0; i < 40; i++) {
-      this.addCube();
+    var cubeTrackArray = [];
+    for (var i = 0; i < 35; i++) {
+      this.addCube(cubeTrackArray);
     }
 
     this.player = new Player(this.scene);
@@ -170,15 +197,6 @@ var GameScene = (function () {
     this.scene.simulate();
 
     this.renderer.render(this.scene, this.camera);
-
-    for (var i = this.lasers.length - 1; i >= 0; i--) {
-      var laserMesh = this.lasers[i];
-      var vel = laserMesh.getLinearVelocity();
-      if (laserMesh.position.y < 0.5 && vel.x === 0 && vel.y === 0 && vel.z === 0) {
-        this.scene.remove(laserMesh);
-        this.lasers.splice(i, 1);
-      }
-    }
   }
 
   return GameScene;

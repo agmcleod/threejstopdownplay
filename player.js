@@ -2,6 +2,7 @@ var Player = (function () {
   var notMovingVector = new THREE.Vector3(0, 0, 0);
   var target = new THREE.Vector3(0, 0, 0);
   var target2 = new THREE.Vector3(0, 0, 0);
+
   function Player (parent) {
     var geometry = new THREE.BoxGeometry(1, 1, 1);
 

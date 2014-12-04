@@ -12,13 +12,7 @@ var Enemy = (function () {
     this.mesh.position.set(x, 1, z);
     var zero = new THREE.Vector3(0, 0, 0);
     parent.add(this.mesh);
-    var _this = this;
-    this.mesh.addEventListener('collision', function (other_object, relative_velocity, relative_rotation, contact_normal) {
-      if (other_object.name === "laser") {
-        scene.removeObject(_this.mesh);
-        scene.removeLaser(other_object);
-      }
-    });
+    this.mesh.name = "enemy";
   }
 
   return Enemy;

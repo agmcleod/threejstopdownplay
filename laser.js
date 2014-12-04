@@ -25,7 +25,14 @@ var Laser = (function () {
     this.mesh.position.set(x, 1, z);
     this.mesh.rotation.y -= angle;
     this.impulseVector = new THREE.Vector3(velX * 10, 0, velZ * 10);
-    this.mesh.name = "laser";
+    var _this = this;
+
+    this.mesh.addEventListener('collision', function (other_object, relative_velocity, relative_rotation, contact_normal) {
+      if (other_object.name === "enemy") {
+        scene.removeLaser(other_object);
+      }
+      scene.removeObject(_this.mesh);
+    });
   }
 
   return Laser;
