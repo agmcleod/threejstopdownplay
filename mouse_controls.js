@@ -43,6 +43,42 @@
     undefined
   ];
 
+  function resolveTouchesToIntent (touches, leftTouch, rightTouch) {
+    var t1 = touches[0];
+    var t2 = touches[1];
+    var idx;
+    if (t1 && t2) {
+      if (t1.clientX < window.innerWidth / 2) {
+        leftTouch = t1;
+        rightTouch = t2;
+        idx = 0;
+      }
+      else {
+        leftTouch = t2;
+        rightTouch = t1;
+        idx = 1;
+      }
+    }
+    else if (t1) {
+      if (t1.clientX < window.innerWidth / 2) {
+        leftTouch = t1;
+        rightTouch = null;
+        idx = 0;
+      }
+      else {
+        leftTouch = null;
+        rightTouch = t1;
+        idx = 1;
+      }
+    }
+
+    return {
+      leftTouch: leftTouch,
+      rightTouch: rightTouch,
+      leftTouchNumber: idx
+    };
+  }
+
   var POINTER_MOVE = 1;
   var POINTER_DOWN = 2;
   var POINTER_UP = 3;
@@ -64,7 +100,7 @@
   function MouseControls () {
     this.moveOrigin = { x: null, y: null };
     this.isDown = false;
-    this.touches = [{x:0,y:0,down: false}, {x:0,y:0, down: false}];
+    this.touches = [{x:0,y:0,down: false}, {down: false}];
   }
 
   MouseControls.prototype.bindTouch = function () {
@@ -72,18 +108,16 @@
     window.addEventListener(activeEventList[POINTER_DOWN], function (e) {
       e.preventDefault();
       _this.isDown = true;
-      if (e.touches && e.touches[0].x < window.innerWidth / 2) {
-        var x = e.touches[0].clientX;
-        var y = e.touches[0].clientY;
-        _this.moveOrigin.x = x;
-        _this.moveOrigin.y = y;
-      }
-
       if (e.touches) {
-        if (_this.touches[0]) {
+        var res = resolveTouchesToIntent(e.touches);
+
+        if (res.leftTouch) {
+          _this.moveOrigin.x = res.leftTouch.clientX;
+          _this.moveOrigin.y = res.leftTouch.clientY;
           _this.touches[0].down = true;
         }
-        if (_this.touches[1]) {
+
+        if (res.rightTouch) {
           _this.touches[1].down = true;
         }
       }
@@ -91,32 +125,10 @@
 
     window.addEventListener(activeEventList[POINTER_MOVE], function (e) {
       if (e.touches) {
-        var t1 = e.touches[0];
-        var t2 = e.touches[1];
-        if (t2) {
-          var leftTouch, rightTouch;
-          if (t1.clientX < window.innerWidth / 2) {
-            leftTouch = t1;
-          }
-          else {
-            leftTouch = t2;
-          }
-
-          if (t2.clientX > window.innerWidth / 2) {
-            rightTouch = t2;
-          }
-          else {
-            rightTouch = t1;
-          }
-
-          _this.touches[0].x = leftTouch.clientX;
-          _this.touches[0].y = leftTouch.clientY;
-          _this.touches[1].x = rightTouch.clientX;
-          _this.touches[1].y = rightTouch.clientY;
-        }
-        else {
-          _this.touches[0].x = t1.clientX;
-          _this.touches[0].y = t1.clientY;
+        var res = resolveTouchesToIntent(e.touches);
+        if (res.leftTouch) {
+          _this.touches[res.leftTouchNumber].x = res.leftTouch.clientX;
+          _this.touches[res.leftTouchNumber].y = res.leftTouch.clientY;
         }
       }
       else {
@@ -127,17 +139,19 @@
 
     window.addEventListener(activeEventList[POINTER_UP], function (e) {
       e.preventDefault();
-      if (!e.touches || !e.touches[0]) {
+      if (!e.touches || e.touches.length === 0) {
         _this.isDown = false;
         _this.touches[0].down = false;
         _this.touches[1].down = false;
       }
 
       if (e.touches) {
-        if (!_this.touches[0]) {
+        var leftTouch, rightTouch;
+        var res = resolveTouchesToIntent(e.touches);
+        if (!res.leftTouch) {
           _this.touches[0].down = false;
         }
-        if (!_this.touches[1]) {
+        if (!res.rightTouch) {
           _this.touches[1].down = false;
         }
       }
