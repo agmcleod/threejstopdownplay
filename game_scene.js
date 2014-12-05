@@ -55,6 +55,8 @@ var GameScene = (function () {
 
     var attempts = 0;
 
+    var validCoords = false;
+
     while (!validCoords) {
       var validCoords = true;
 
@@ -82,8 +84,35 @@ var GameScene = (function () {
     cubeTrackArray.push({ x: cube.position.x, z: cube.position.z, size: size });
   };
 
-  GameScene.prototype.addEnemy = function () {
-    new Enemy(this.scene, -30 + Math.round(Math.random() * 60), -30 + Math.round(Math.random() * 60));
+  GameScene.prototype.addEnemy = function (cubeTrackArray) {
+    var attempts = 0;
+
+    var validCoords = false;
+
+    var x, z;
+
+    while (!validCoords) {
+      var validCoords = true;
+
+      x = getRandomCoordinate();
+      z = getRandomCoordinate();
+
+      for (var i = cubeTrackArray.length - 1; i >= 0; i--) {
+        var otherCube = cubeTrackArray[i];
+        var diff = (1 + otherCube.size * 0.2);
+        if (Math.abs(x - otherCube.x) < diff || Math.abs(z - otherCube.z) < diff) {
+          validCoords = false;
+          break;
+        }
+      }
+
+      attempts++;
+
+      if (attempts > 10) {
+        return;
+      }
+    }
+    new Enemy(this.scene, x, z);
   };
 
   GameScene.prototype.addLaser = function (laser) {
@@ -125,7 +154,7 @@ var GameScene = (function () {
     this.scene.add(this.camera);
 
     for (var i = 0; i < 20; i++) {
-      this.addEnemy();
+      this.addEnemy(cubeTrackArray);
     }
   }
 
