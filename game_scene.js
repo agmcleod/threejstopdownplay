@@ -15,7 +15,7 @@ var GameScene = (function () {
 
     container.appendChild(renderer.domElement);
 
-    this.lasers = [];
+    this.enemies = [];
 
     this.bindEvents();
 
@@ -112,7 +112,7 @@ var GameScene = (function () {
         return;
       }
     }
-    new Enemy(this.scene, x, z);
+    this.enemies.push(new Enemy(this.scene, x, z));
   };
 
   GameScene.prototype.addLaser = function (laser) {
@@ -203,13 +203,17 @@ var GameScene = (function () {
     this.keyControls.bindKey("SPACE");
   }
 
-  GameScene.prototype.removeLaser = function(laserMesh) {
-    this.removeObject(laserMesh);
-    this.lasers.splice(this.lasers.indexOf(laserMesh), 1);
+  GameScene.prototype.removeEnemy = function(enemy) {
+    this.removeObject(enemy.mesh);
+    this.enemies.splice(this.enemies.indexOf(enemy), 1);
   }
 
-  GameScene.prototype.removeObject = function(enemy) {
-    this.scene.remove(enemy);
+  GameScene.prototype.removeLaser = function(laserMesh) {
+    this.removeObject(laserMesh);
+  }
+
+  GameScene.prototype.removeObject = function(obj) {
+    this.scene.remove(obj);
   }
 
   GameScene.prototype.render = function (timestamp) {
@@ -222,6 +226,11 @@ var GameScene = (function () {
     this.camera.position.set(lookAtPos.x, this.camera.position.y, lookAtPos.z);
     this.camera.lookAt(lookAtPos);
     this.spotlightTarget.position.set(lookAtPos.x, lookAtPos.y, lookAtPos.z);
+
+    for (var i = this.enemies.length - 1; i >= 0; i--) {
+      var enemy = this.enemies[i];
+      enemy.update();
+    }
 
     this.scene.simulate();
 
