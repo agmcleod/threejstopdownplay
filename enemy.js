@@ -1,4 +1,5 @@
 var Enemy = (function () {
+  var VEL = 10;
   function Enemy (parent, x, z) {
     var geometry = new THREE.SphereGeometry(1, 32, 32);
 
@@ -11,11 +12,34 @@ var Enemy = (function () {
     this.mesh = new Physijs.BoxMesh(geometry, mat);
     this.mesh.position.set(x, 1, z);
     var zero = new THREE.Vector3(0, 0, 0);
+    var xVel, zVel;
+    var r = ~~(Math.random() * 3);
+    if (r < 1) {
+      xVel = VEL;
+    }
+    else if (r < 2) {
+      xVel = -VEL;
+    }
+    else {
+      xVel = 0;
+    }
+    r = ~~(Math.random() * 3);
+
+    if (r < 1) {
+      zVel = VEL;
+    }
+    else if (r < 2) {
+      zVel = -VEL;
+    }
+    else {
+      zVel = 0;
+    }
+
     this.dir = new THREE.Vector3(
-      !!~~(Math.random() * 2) ? 5 : -5,
+      xVel,
       0,
-      !!~~(Math.random() * 2) ? 5 : -5
-    )
+      zVel
+    );
     parent.add(this.mesh);
     this.mesh.name = "enemy";
 
