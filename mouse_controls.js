@@ -43,6 +43,8 @@
     undefined
   ];
 
+  var _this;
+
   function resolveTouchesToIntent (touches, leftTouch, rightTouch) {
     var t1 = touches[0];
     var t2 = touches[1];
@@ -95,60 +97,64 @@
     this.moveOrigin = { x: null, y: null };
     this.isDown = false;
     this.touches = [{x:0,y:0,down: false}, {down: false}];
+    _this = this;
+  }
+
+  function downEvent (e) {
+    e.preventDefault();
+    _this.isDown = true;
+    if (e.touches) {
+      var res = resolveTouchesToIntent(e.touches);
+      if (res.leftTouch && e.touches.length === 1) {
+        _this.moveOrigin.x = res.leftTouch.clientX;
+        _this.moveOrigin.y = res.leftTouch.clientY;
+        _this.touches[0].down = true;
+      }
+
+      if (res.rightTouch) {
+        _this.touches[1].down = true;
+      }
+    }
+  }
+
+  function moveEvent (e) {
+    if (e.touches) {
+      var res = resolveTouchesToIntent(e.touches);
+      if (res.leftTouch) {
+        _this.touches[0].x = res.leftTouch.clientX;
+        _this.touches[0].y = res.leftTouch.clientY;
+      }
+    }
+    else {
+      _this.touches[0].x = e.clientX;
+      _this.touches[0].y = e.clientY;
+    }
+  }
+
+  function upEvent (e) {
+    e.preventDefault();
+    if (!e.touches || e.touches.length === 0) {
+      _this.isDown = false;
+      _this.touches[0].down = false;
+      _this.touches[1].down = false;
+    }
+
+    if (e.touches) {
+      var leftTouch, rightTouch;
+      var res = resolveTouchesToIntent(e.touches);
+      if (!res.leftTouch) {
+        _this.touches[0].down = false;
+      }
+      if (!res.rightTouch) {
+        _this.touches[1].down = false;
+      }
+    }
   }
 
   MouseControls.prototype.bindTouch = function () {
-    var _this = this;
-    window.addEventListener(activeEventList[POINTER_DOWN], function (e) {
-      e.preventDefault();
-      _this.isDown = true;
-      if (e.touches) {
-        var res = resolveTouchesToIntent(e.touches);
-        if (res.leftTouch && e.touches.length === 1) {
-          _this.moveOrigin.x = res.leftTouch.clientX;
-          _this.moveOrigin.y = res.leftTouch.clientY;
-          _this.touches[0].down = true;
-        }
-
-        if (res.rightTouch) {
-          _this.touches[1].down = true;
-        }
-      }
-    });
-
-    window.addEventListener(activeEventList[POINTER_MOVE], function (e) {
-      if (e.touches) {
-        var res = resolveTouchesToIntent(e.touches);
-        if (res.leftTouch) {
-          _this.touches[0].x = res.leftTouch.clientX;
-          _this.touches[0].y = res.leftTouch.clientY;
-        }
-      }
-      else {
-        _this.touches[0].x = e.clientX;
-        _this.touches[0].y = e.clientY;
-      }
-    });
-
-    window.addEventListener(activeEventList[POINTER_UP], function (e) {
-      e.preventDefault();
-      if (!e.touches || e.touches.length === 0) {
-        _this.isDown = false;
-        _this.touches[0].down = false;
-        _this.touches[1].down = false;
-      }
-
-      if (e.touches) {
-        var leftTouch, rightTouch;
-        var res = resolveTouchesToIntent(e.touches);
-        if (!res.leftTouch) {
-          _this.touches[0].down = false;
-        }
-        if (!res.rightTouch) {
-          _this.touches[1].down = false;
-        }
-      }
-    });
+    window.addEventListener(activeEventList[POINTER_DOWN], downEvent);
+    window.addEventListener(activeEventList[POINTER_MOVE], moveEvent);
+    window.addEventListener(activeEventList[POINTER_UP], upEvent);
   }
 
   MouseControls.prototype.coordsAsVector = function (x, y, camera, target) {
@@ -167,6 +173,12 @@
 
   MouseControls.prototype.mouseDown = function () {
     return this.isDown;
+  }
+
+  MouseControls.prototype.unbind = function () {
+    window.removeEventListener(activeEventList[POINTER_DOWN], downEvent);
+    window.removeEventListener(activeEventList[POINTER_MOVE], moveEvent);
+    window.removeEventListener(activeEventList[POINTER_UP], upEvent);
   }
 
   window.MouseControls = MouseControls;

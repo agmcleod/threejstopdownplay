@@ -12,6 +12,8 @@
     </style>
     <script src="lib/three.js"></script>
     <script src="lib/physi.js"></script>
+    <script src="image_loader.js"></script>
+    <script src="image_screen.js"></script>
     <script src="key_controls.js"></script>
     <script src="mouse_controls.js"></script>
     <script src="game_scene.js"></script>
@@ -24,8 +26,16 @@
     <script>
       Physijs.scripts.worker = './lib/physijs_worker.js';
       Physijs.scripts.ammo = './ammo.js';
-      window.scene = new GameScene();
-      requestAnimationFrame(scene.render.bind(scene));
+      window.loader = new ImageLoader([
+        { name: "retry", src: "img/retry.png" },
+        { name: "title", src: "img/title.png" }
+      ], function () {
+        var title = new ImageScreen("title");
+        title.stageImage(function () {
+          window.scene = new GameScene();
+          requestAnimationFrame(scene.render.bind(scene));
+        });
+      });
     </script>
   </body>
 

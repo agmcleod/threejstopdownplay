@@ -189,12 +189,7 @@ var GameScene = (function () {
   }
 
   GameScene.prototype.bindEvents = function () {
-    var _this = this;
-    window.addEventListener("resize", function () {
-      _this.camera.aspect = window.innerWidth / window.innerHeight;
-      _this.camera.updateProjectionMatrix();
-      _this.renderer.setSize(window.innerWidth, window.innerHeight);
-    }, false);
+    window.addEventListener("resize", this.resizeEvent.bind(this), false);
 
     this.mouseControls = new MouseControls();
     this.mouseControls.bindTouch();
@@ -203,9 +198,19 @@ var GameScene = (function () {
     this.keyControls.bindKey("SPACE");
   }
 
+  GameScene.prototype.dontRender = function () {
+    this.dontRender = true;
+  }
+
   GameScene.prototype.removeEnemy = function(enemy) {
     this.removeObject(enemy.mesh);
     this.enemies.splice(this.enemies.indexOf(enemy), 1);
+  }
+
+  GameScene.prototype.removeEvents = function () {
+    this.mouseControls.unbind();
+    this.keyControls.unbind();
+    window.removeEventListener("resize", this.resizeEvent.bind(this));
   }
 
   GameScene.prototype.removeLaser = function(laserMesh) {
@@ -217,6 +222,9 @@ var GameScene = (function () {
   }
 
   GameScene.prototype.render = function (timestamp) {
+    if (this.dontRender === true) {
+      return false;
+    }
     requestAnimationFrame(this.render.bind(this));
     this.timestamp = timestamp;
 
@@ -235,6 +243,12 @@ var GameScene = (function () {
     this.scene.simulate();
 
     this.renderer.render(this.scene, this.camera);
+  }
+
+  GameScene.prototype.resizeEvent = function () {
+    this.camera.aspect = window.innerWidth / window.innerHeight;
+    this.camera.updateProjectionMatrix();
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
   }
 
   return GameScene;

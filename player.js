@@ -16,7 +16,8 @@ var Player = (function () {
       4: [1, 0.7],
       3: [1, 0.4],
       2: [1, 0.2],
-      1: [0.8, 0]
+      1: [0.8, 0],
+      0: [0.6, 0]
     };
 
     this.mesh = new Physijs.BoxMesh(geometry, this.mat);
@@ -34,6 +35,15 @@ var Player = (function () {
           _this.health--;
           _this.mat.color.r = colours[_this.health][0];
           _this.mat.color.g = colours[_this.health][1];
+        }
+        else {
+          scene.removeEvents();
+          var loss = new ImageScreen("retry");
+          loss.stageImage(function () {
+            scene.dontRender();
+            window.scene = new GameScene();
+            requestAnimationFrame(scene.render.bind(scene));
+          });
         }
       }
     });

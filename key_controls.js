@@ -100,36 +100,46 @@
     "SINGLE_QUOTE" : 222
   };
 
-  function KeyControls () {
-    this.map = {};
-    var _this = this;
-    window.addEventListener("keydown", function (e) {
-      if (typeof _this.map[e.keyCode] === "undefined") {
-        return true;
-      }
-      e.preventDefault();
+  var _this;
 
-      _this.map[e.keyCode] = true;
-    });
+  function keyDown (e) {
+    if (typeof _this.map[e.keyCode] === "undefined") {
+      return true;
+    }
+    e.preventDefault();
 
-    window.addEventListener("keyup", function (e) {
+    _this.map[e.keyCode] = true;
+  }
+
+  function keyUp (e) {
       if (typeof _this.map[e.keyCode] === "undefined") {
         return true;
       }
       e.preventDefault();
 
       _this.map[e.keyCode] = false;
-    });
+  }
+
+  function KeyControls () {
+    this.map = {};
+    _this = this;
+    window.addEventListener("keydown", keyDown);
+    window.addEventListener("keyup", keyUp);
   }
 
   KeyControls.prototype.bindKey = function (key) {
     this.map[keys[key]] = false;
-  };
+  }
 
   KeyControls.prototype.isPressed = function (key) {
     var code = keys[key];
     return this.map[code];
-  };
+  }
+
+  KeyControls.prototype.unbind = function () {
+    window.removeEventListener("keydown", keyDown);
+    window.removeEventListener("keyup", keyUp);
+  }
 
   window.KeyControls = KeyControls;
 })();
