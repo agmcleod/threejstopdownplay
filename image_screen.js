@@ -26,15 +26,21 @@ var ImageScreen = (function () {
 
   api.prototype.removeSelf = function () {
     this.image.removeEventListener('click', this.imageCallback.bind(this));
+    window.removeEventListener("resize", this.resize.bind(this));
     this.image.parentNode.removeChild(this.image);
+  }
+
+  api.prototype.resize = function () {
+    this.image.style.width = window.innerWidth + "px";
+    this.image.style.height = window.innerHeight + "px";
   }
 
   api.prototype.stageImage = function (callback) {
     var screenEle = document.getElementById('screen');
     screenEle.innerHTML = '';
+    window.addEventListener("resize", this.resize.bind(this), false);
+    this.resize();
     document.body.appendChild(this.image);
-    this.image.style.width = window.innerWidth + "px";
-    this.image.style.height = window.innerHeight + "px";
     this.callback = callback;
     this.image.addEventListener('click', this.imageCallback.bind(this));
   }
