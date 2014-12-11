@@ -38,12 +38,7 @@ var Player = (function () {
         }
         else {
           scene.removeEvents();
-          var loss = new ImageScreen("retry");
-          loss.stageImage(function () {
-            scene.dontRender();
-            window.scene = new GameScene();
-            requestAnimationFrame(scene.render.bind(scene));
-          });
+          scene.showEndScreen();
         }
       }
     });

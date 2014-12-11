@@ -81,6 +81,7 @@ var GameScene = (function () {
 
     cube.position.y = size / 2;
     this.scene.add(cube);
+    this.cubes.push(cube);
     cubeTrackArray.push({ x: cube.position.x, z: cube.position.z, size: size });
   };
 
@@ -129,7 +130,7 @@ var GameScene = (function () {
     this.cameraLight.target = this.spotlightTarget;
     this.camera.add(this.cameraLight);
     this.scene.add(this.spotlightTarget);
-  };
+  }
 
   GameScene.prototype.addObjects = function () {
     this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 2000);
@@ -140,12 +141,14 @@ var GameScene = (function () {
     var planeMaterial = new THREE.MeshPhongMaterial({ color: 0x000000, side: THREE.FrontSide });
     var plane = new Physijs.BoxMesh(planeGeom, planeMaterial, 0);
     plane.rotation.x = Math.PI * -0.5;
-    plane.receiveShadow  = true;
+    plane.receiveShadow = true;
+    this.plane = plane;
     this.scene.add(plane);
     this.camera.lookAt(this.scene.position);
 
     this.addLighting();
     var cubeTrackArray = [];
+    this.cubes = [];
     for (var i = 0; i < 35; i++) {
       this.addCube(cubeTrackArray);
     }
@@ -159,12 +162,14 @@ var GameScene = (function () {
   }
 
   GameScene.prototype.addWalls = function () {
+    this.walls = [];
     var wallGeom = new THREE.BoxGeometry(70, 5, 1);
     var wallMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff });
     var wallOne = new Physijs.BoxMesh(wallGeom, wallMaterial, 0);
 
     wallOne.position.set(1, 2.5, -35);
     this.scene.add(wallOne);
+    this.walls.push(wallOne);
 
     wallGeom = new THREE.BoxGeometry(70, 5, 1);
     wallMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff });
@@ -172,6 +177,7 @@ var GameScene = (function () {
 
     wallTwo.position.set(1, 2.5, 35);
     this.scene.add(wallTwo);
+    this.walls.push(wallTwo);
 
     wallGeom = new THREE.BoxGeometry(1, 5, 70);
     wallMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff });
@@ -179,6 +185,7 @@ var GameScene = (function () {
 
     wallThree.position.set(35, 2.5, 1);
     this.scene.add(wallThree);
+    this.walls.push(wallThree);
 
     wallGeom = new THREE.BoxGeometry(1, 5, 70);
     wallMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff });
@@ -186,6 +193,7 @@ var GameScene = (function () {
 
     wallFour.position.set(-35, 2.5, 1);
     this.scene.add(wallFour);
+    this.walls.push(wallFour);
   }
 
   GameScene.prototype.bindEvents = function () {
@@ -249,6 +257,39 @@ var GameScene = (function () {
     this.camera.aspect = window.innerWidth / window.innerHeight;
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(window.innerWidth, window.innerHeight);
+  }
+
+  GameScene.prototype.showEndScreen = function () {
+    this.dontRender();
+    var loss = new ImageScreen("retry");
+    this.scene.remove(this.player.mesh);
+    this.player = null;
+    for (var i = this.cubes.length - 1; i >= 0; i--) {
+      var cube = this.cubes[i];
+      this.scene.remove(cube);
+    }
+
+    this.cubes = [];
+
+    for (var i = this.enemies.length - 1; i >= 0; i--) {
+      var enemy = this.enemies[i];
+      this.scene.remove(enemy.mesh);
+    }
+
+    this.enemies = [];
+
+    this.scene.remove(this.camera);
+    this.scene.remove(this.spotlightTarget);
+    this.scene.remove(this.plane);
+
+    for (var i = this.walls.length - 1; i >= 0; i--) {
+      this.scene.remove(this.walls[i]);
+    }
+
+    loss.stageImage(function () {
+      window.scene = new GameScene();
+      requestAnimationFrame(scene.render.bind(scene));
+    });
   }
 
   return GameScene;
