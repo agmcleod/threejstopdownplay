@@ -26,6 +26,7 @@ var Player = (function () {
     var _this = this;
     var zero = new THREE.Vector3(0, 0, 0);
     this.health = 5;
+    this.velVector = new THREE.Vector3();
     this.mesh.addEventListener('collision', function (other_object, relative_velocity, relative_rotation, contact_normal) {
       _this.mesh.setLinearVelocity(zero);
       _this.mesh.setAngularVelocity(zero);
@@ -61,7 +62,8 @@ var Player = (function () {
       var angle = Math.atan2(p2.z - p1.z, p2.x - p1.x);
       var velX = Math.cos(angle) * 20;
       var velZ = Math.sin(angle) * 20;
-      this.mesh.setLinearVelocity(new THREE.Vector3(velX, 0, velZ));
+      this.velVector.set(velX, 0, velZ);
+      this.mesh.setLinearVelocity(this.velVector);
 
       if ((scene.mouseControls.touches[1].down || scene.keyControls.isPressed("SPACE")) && scene.timestamp - this.lastLaserTime > 200) {
         this.lastLaserTime = scene.timestamp;
