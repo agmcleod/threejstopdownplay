@@ -6,7 +6,7 @@ var GameScene = (function () {
 
   function GameScene () {
     var container = document.getElementById("screen");
-    this.scene = new Physijs.Scene();
+    this.scene = new Physijs.Scene({ reportsize: 61, fixedTimeStep: 1 / 55 });
 
     var renderer = new THREE.WebGLRenderer( { antialias: true } );
     renderer.setSize(window.innerWidth, window.innerHeight);
