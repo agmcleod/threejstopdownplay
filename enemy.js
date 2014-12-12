@@ -4,7 +4,7 @@ var Enemy = (function () {
     var geometry = new THREE.SphereGeometry(1, 32, 32);
 
     var mat = Physijs.createMaterial(
-      new THREE.MeshPhongMaterial({ color: 0xff0000 }),
+      new THREE.MeshLambertMaterial({ color: 0xff0000 }),
       0.8,
       0
     );

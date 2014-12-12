@@ -46,7 +46,7 @@ var GameScene = (function () {
     var size = Math.ceil(Math.random() * 3);
     var geo = new THREE.BoxGeometry(size, size, size);
     var mat = Physijs.createMaterial(
-      new THREE.MeshPhongMaterial({ color: Math.random() * 0xffffff }),
+      new THREE.MeshLambertMaterial({ color: Math.random() * 0xffffff }),
       0.8,
       0
     );
