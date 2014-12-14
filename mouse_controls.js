@@ -164,8 +164,13 @@
       0.5
     );
 
-    vector.unproject(camera);
-    var dir = vector.sub(camera.position).normalize();
+    BABYLON.Vector3.Project(
+      vector,
+      window.scene.camera.getWorldMatrix(),
+      window.scene.scene.getTransformation(),
+      window.scene.camera.viewport.toGlobal(window.scene.engine)
+    );
+    var dir = vector.subtract(camera.position).normalize();
     var distance = - camera.position.y / dir.y;
     return target.copyFromFloats(camera.position.x, camera.position.y, camera.position.z).add(dir.multiplyScalar(distance));
   }

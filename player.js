@@ -8,7 +8,7 @@ var Player = (function () {
     this.mesh.diffuseColor = new BABYLON.Color3(1, 1, 0);
     this.mesh.position.y = 0.5;
 
-    var colours = {
+    this.colours = {
       4: [1, 0.7],
       3: [1, 0.4],
       2: [1, 0.2],
@@ -29,13 +29,13 @@ var Player = (function () {
   Player.prototype.takeHit = function () {
     if (this.health > 0) {
       this.health--;
-      this.mesh.diffuseColor.r = colours[_this.health][0];
-      this.mesh.diffuseColor.g = colours[_this.health][1];
+      this.mesh.diffuseColor.r = this.colours[this.health][0];
+      this.mesh.diffuseColor.g = this.colours[this.health][1];
     }
-    else {
+    /* else {
       scene.removeEvents();
       scene.showEndScreen();
-    }
+    } */
   }
 
   Player.prototype.update = function () {
@@ -61,10 +61,6 @@ var Player = (function () {
         this.lastLaserTime = scene.timestamp;
         scene.addLaser(new Laser(this.parent, angle, Math.cos(angle), Math.sin(angle), this.mesh.position));
       }
-    }
-    else {
-      notMovingVector.y = this.mesh.getLinearVelocity().y;
-      this.mesh.moveWithCollisions(notMovingVector);
     }
   }
 

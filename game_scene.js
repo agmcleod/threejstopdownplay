@@ -4,14 +4,15 @@ var GameScene = (function () {
     return  -30 + Math.round(Math.random() * 60);
   }
 
-  function GameScene (engine) {
-    var container = document.getElementById("screen");
-    
+  function GameScene (engine, canvas) {
+    this.canvas = canvas;
     this.scene = new BABYLON.Scene(engine);
     this.scene.collisionsEnabled = true;
+    this.scene.clearColor = new BABYLON.Color3(0, 0, 0.2);
     this.engine = engine;
 
     this.enemies = [];
+    this.lasers = [];
 
     this.bindEvents();
 
@@ -103,12 +104,12 @@ var GameScene = (function () {
   };
 
   GameScene.prototype.addLaser = function (laser) {
-    this.scene.add(laser.mesh);
-    laser.mesh.applyCentralImpulse(laser.impulseVector);
-  };
+    this.lasers.push(laser);
+  }
 
   GameScene.prototype.addLighting = function () {
     this.cameraLight = new BABYLON.SpotLight("Spot0", new BABYLON.Vector3(0, 0, 0), new BABYLON.Vector3(0, -1, 0), 0.8, 2, this.scene);
+    this.cameraLight.setEnabled(1);
   }
 
   GameScene.prototype.addObjects = function () {
@@ -135,13 +136,12 @@ var GameScene = (function () {
     }
 
     this.addWalls();
-    this.addShadows();
   }
 
   GameScene.prototype.addShadows = function () {
     var shadowGen = new BABYLON.ShadowGenerator(1024, this.cameraLight);
 
-    shadowGen.getShadowMap().renderList.push(this.player);
+    shadowGen.getShadowMap().renderList.push(this.player.mesh);
 
     for (var i = this.walls.length - 1; i >= 0; i--) {
       var wall = this.walls[i];
@@ -155,7 +155,7 @@ var GameScene = (function () {
 
     for (var i = this.enemies.length - 1; i >= 0; i--) {
       var enemy = this.enemies[i];
-      shadowGen.getShadowMap().renderList.push(enemy);
+      shadowGen.getShadowMap().renderList.push(enemy.mesh);
     }
   }
 
@@ -240,7 +240,7 @@ var GameScene = (function () {
         }
       }
 
-      if (enemy.intersectsMesh(this.player.mesh, false)) {
+      if (enemy.mesh.intersectsMesh(this.player.mesh, false)) {
         this.player.takeHit();
       }
     }
@@ -273,15 +273,9 @@ var GameScene = (function () {
     if (this.dontRender === true) {
       return false;
     }
-    requestAnimationFrame(this.render.bind(this));
     this.timestamp = timestamp;
 
     this.player.update();
-
-    var lookAtPos = this.player.mesh.position.clone();
-    this.camera.position.copyFromFloats(lookAtPos.x, this.camera.position.y, lookAtPos.z);
-    this.camera.lookAt(lookAtPos);
-    this.spotlightTarget.position.copyFromFloats(lookAtPos.x, lookAtPos.y, lookAtPos.z);
 
     for (var i = this.enemies.length - 1; i >= 0; i--) {
       var enemy = this.enemies[i];
@@ -289,6 +283,7 @@ var GameScene = (function () {
     }
 
     this.checkCollisions();
+    this.scene.render();
   }
 
   GameScene.prototype.resizeEvent = function () {
@@ -298,28 +293,24 @@ var GameScene = (function () {
   GameScene.prototype.showEndScreen = function () {
     this.dontRender();
     var loss = new ImageScreen("retry");
-    this.scene.remove(this.player.mesh);
+    this.player.mesh.dispose();
     this.player = null;
     for (var i = this.cubes.length - 1; i >= 0; i--) {
-      var cube = this.cubes[i];
-      this.scene.remove(cube);
+      this.cubes[i].dispose();
     }
 
     this.cubes = [];
 
     for (var i = this.enemies.length - 1; i >= 0; i--) {
-      var enemy = this.enemies[i];
-      this.scene.remove(enemy.mesh);
+      this.enemies[i].mesh.dispose();
     }
 
     this.enemies = [];
-
-    this.scene.remove(this.camera);
-    this.scene.remove(this.spotlightTarget);
-    this.scene.remove(this.plane);
+    this.plane.dispose();
+    this.camera.dispose();
 
     for (var i = this.walls.length - 1; i >= 0; i--) {
-      this.scene.remove(this.walls[i]);
+      this.walls[i].dispose();
     }
 
     loss.stageImage(function () {
