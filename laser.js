@@ -2,7 +2,9 @@ var Laser = (function () {
   function Laser (scene, angle, velX, velZ, playerPos) {
     this.mesh = new BABYLON.Mesh("laser", scene);
     this.mesh.applyToMesh(CreateVariableBox(1.5, 0.5, 0.5));
-    this.mesh.diffuseColor = new BABYLON.Color3(0, 1, 0);
+    var mat = new BABYLON.StandardMaterial("laserMat", parent);
+    mat.diffuseColor = new BABYLON.Color3(0, 1, 0);
+    this.mesh.material = mat;
     var x = playerPos.x;
     var z = playerPos.z;
     if (velX >= 0) {

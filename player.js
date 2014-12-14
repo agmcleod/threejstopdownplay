@@ -5,7 +5,9 @@ var Player = (function () {
 
   function Player (parent) {
     this.mesh = new BABYLON.Mesh.CreateBox("player", 1, parent);
-    this.mesh.diffuseColor = new BABYLON.Color3(1, 1, 0);
+    var mat = new BABYLON.StandardMaterial("playerMat", parent);
+    mat.diffuseColor = new BABYLON.Color3(1, 1, 0);
+    this.mesh.material = mat;
     this.mesh.position.y = 0.5;
 
     this.colours = {
@@ -29,8 +31,8 @@ var Player = (function () {
   Player.prototype.takeHit = function () {
     if (this.health > 0) {
       this.health--;
-      this.mesh.diffuseColor.r = this.colours[this.health][0];
-      this.mesh.diffuseColor.g = this.colours[this.health][1];
+      this.mesh.material.diffuseColor.r = this.colours[this.health][0];
+      this.mesh.material.diffuseColor.g = this.colours[this.health][1];
     }
     /* else {
       scene.removeEvents();

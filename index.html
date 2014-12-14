@@ -32,9 +32,9 @@
         title.stageImage(function () {
           var canvas = document.createElement("canvas");
           canvas.id = 'screen';
-          canvas.width = window.innerWidth;
-          canvas.height = window.innerHeight;
           document.body.appendChild(canvas);
+          canvas.style.width = (window.innerWidth) + 'px';
+          canvas.style.height = (window.innerHeight) + 'px';
           var engine = new BABYLON.Engine(canvas, true);
           window.scene = new GameScene(engine, canvas);
           engine.runRenderLoop(function () {

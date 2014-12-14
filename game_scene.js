@@ -8,11 +8,12 @@ var GameScene = (function () {
     this.canvas = canvas;
     this.scene = new BABYLON.Scene(engine);
     this.scene.collisionsEnabled = true;
-    this.scene.clearColor = new BABYLON.Color3(0, 0, 0.2);
+    this.scene.clearColor = new BABYLON.Color3(0.8, 0.8, 0.8);
     this.engine = engine;
 
     this.enemies = [];
     this.lasers = [];
+    this.walls = [];
 
     this.bindEvents();
 
@@ -41,7 +42,9 @@ var GameScene = (function () {
   GameScene.prototype.addCube = function (cubeTrackArray) {
     var size = Math.ceil(Math.random() * 3);
     var cube = new BABYLON.Mesh.CreateBox("box", size, this.scene);
-    cube.diffuseColor = new BABYLON.Color3(Math.random(), Math.random(), Math.random());
+    var material = new BABYLON.StandardMaterial("cubeMat", this.scene);
+    material.diffuseColor = new BABYLON.Color3(Math.random(), Math.random(), Math.random());
+    cube.material = material;
     var attempts = 0;
     var validCoords = false;
 
@@ -108,16 +111,17 @@ var GameScene = (function () {
   }
 
   GameScene.prototype.addLighting = function () {
-    this.cameraLight = new BABYLON.SpotLight("Spot0", new BABYLON.Vector3(0, 0, 0), new BABYLON.Vector3(0, -1, 0), 0.8, 2, this.scene);
-    this.cameraLight.setEnabled(1);
+    this.cameraLight = new BABYLON.PointLight("light", new BABYLON.Vector3(0, 5, 0), this.scene);
+    this.cameraLight.diffuse = new BABYLON.Color3(1, 1, 1);
   }
 
   GameScene.prototype.addObjects = function () {
-    this.camera = new BABYLON.FollowCamera("FollowCam", new BABYLON.Vector3(0, 20, 0), this.scene);
+    this.camera = new BABYLON.FollowCamera("FollowCam", new BABYLON.Vector3(0, 0, 0), this.scene);
+    this.camera.radius = 30;
+    this.camera.heightOffset = 20;
 
-    var plane = new BABYLON.Mesh.CreatePlane("plane", 70, this.scene);
-    plane.diffuseColor = new BABYLON.Color3(0, 0, 0);
-    plane.rotation.x = Math.PI * -0.5;
+    var plane = new BABYLON.Mesh.CreateGround("ground", 70, 70, 2, this.scene);
+    plane.diffuseColor = new BABYLON.Color3(0, 0, 0); // new BABYLON.Color3(0, 0, 0);
     this.plane = plane;
 
     this.addLighting();
@@ -134,33 +138,10 @@ var GameScene = (function () {
     for (var i = 0; i < 20; i++) {
       this.addEnemy(cubeTrackArray);
     }
-
-    this.addWalls();
-  }
-
-  GameScene.prototype.addShadows = function () {
-    var shadowGen = new BABYLON.ShadowGenerator(1024, this.cameraLight);
-
-    shadowGen.getShadowMap().renderList.push(this.player.mesh);
-
-    for (var i = this.walls.length - 1; i >= 0; i--) {
-      var wall = this.walls[i];
-      shadowGen.getShadowMap().renderList.push(wall);
-    }
-
-    for (var i = this.cubes.length - 1; i >= 0; i--) {
-      var cube = this.cubes[i];
-      shadowGen.getShadowMap().renderList.push(cube);
-    }
-
-    for (var i = this.enemies.length - 1; i >= 0; i--) {
-      var enemy = this.enemies[i];
-      shadowGen.getShadowMap().renderList.push(enemy.mesh);
-    }
+    // this.addWalls();
   }
 
   GameScene.prototype.addWalls = function () {
-    this.walls = [];
     var wallOne = new BABYLON.Mesh("wallone", this.scene);
     CreateVariableBox(70, 5, 1).applyToMesh(wallOne);
     wallOne.position.copyFromFloats(1, 2.5, -35);
@@ -288,6 +269,8 @@ var GameScene = (function () {
 
   GameScene.prototype.resizeEvent = function () {
     this.engine.resize();
+    this.canvas.style.width = (window.innerWidth) + 'px';
+    this.canvas.style.height = (window.innerHeight) + 'px';
   }
 
   GameScene.prototype.showEndScreen = function () {

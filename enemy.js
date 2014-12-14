@@ -1,7 +1,10 @@
 var Enemy = (function () {
   var VEL = 10;
   function Enemy (parent, x, z) {
-    this.mesh = BABYLON.Mesh.CreateSphere("sphere", 32, 32, parent);
+    this.mesh = BABYLON.Mesh.CreateSphere("sphere", 20, 1, parent);
+    var material = new BABYLON.StandardMaterial("enemyMat", parent);
+    material.diffuseColor = new BABYLON.Color3(1, 0, 0);
+    this.mesh.material = material;
     this.mesh.position.copyFromFloats(x, 1, z);
     var zero = new BABYLON.Vector3(0, 0, 0);
     var xVel, zVel;
@@ -43,7 +46,7 @@ var Enemy = (function () {
   }
 
   Enemy.prototype.update = function () {
-    this.mesh.moveWithCollisions(this.dir);
+    //this.mesh.moveWithCollisions(this.dir);
   }
 
   return Enemy;
