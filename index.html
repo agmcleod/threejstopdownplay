@@ -10,8 +10,9 @@
         padding:0;
       }
     </style>
-    <script src="lib/three.js"></script>
-    <script src="lib/physi.js"></script>
+    <script src="lib/babylon-1.14.js"></script>
+    <script src="lib/cannon.js"></script>
+    <script src="create_variable_box.js"></script>
     <script src="image_loader.js"></script>
     <script src="image_screen.js"></script>
     <script src="key_controls.js"></script>
@@ -22,18 +23,21 @@
     <script src="enemy.js"></script>
   </head>
   <body>
-    <div id="screen"></div>
     <script>
-      Physijs.scripts.worker = './lib/physijs_worker.js';
-      Physijs.scripts.ammo = './ammo.js';
       window.loader = new ImageLoader([
         { name: "retry", src: "img/retry.png" },
         { name: "title", src: "img/title.png" }
       ], function () {
         var title = new ImageScreen("title");
         title.stageImage(function () {
-          window.scene = new GameScene();
-          requestAnimationFrame(scene.render.bind(scene));
+          var canvas = document.createElement("canvas");
+          canvas.id = 'screen';
+          document.body.appendChild(canvas);
+          var engine = new BABYLON.Engine(canvas, true);
+          window.scene = new GameScene(engine);
+          engine.runRenderLoop(function () {
+            window.scene.render();
+          });
         });
       });
     </script>

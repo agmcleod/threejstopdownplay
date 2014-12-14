@@ -158,8 +158,7 @@
   }
 
   MouseControls.prototype.coordsAsVector = function (x, y, camera, target) {
-    var vector = new THREE.Vector3();
-    vector.set(
+    var vector = new BABYLON.Vector3(
       ( x / window.innerWidth ) * 2 - 1,
       - ( y / window.innerHeight ) * 2 + 1,
       0.5
@@ -168,7 +167,7 @@
     vector.unproject(camera);
     var dir = vector.sub(camera.position).normalize();
     var distance = - camera.position.y / dir.y;
-    return target.set(camera.position.x, camera.position.y, camera.position.z).add(dir.multiplyScalar(distance));
+    return target.copyFromFloats(camera.position.x, camera.position.y, camera.position.z).add(dir.multiplyScalar(distance));
   }
 
   MouseControls.prototype.mouseDown = function () {

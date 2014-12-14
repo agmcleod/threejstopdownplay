@@ -37,7 +37,9 @@ var ImageScreen = (function () {
 
   api.prototype.stageImage = function (callback) {
     var screenEle = document.getElementById('screen');
-    screenEle.innerHTML = '';
+    if (screenEle) {
+      document.body.removeChild(screenEle);
+    }
     window.addEventListener("resize", this.resize.bind(this), false);
     this.resize();
     document.body.appendChild(this.image);

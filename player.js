@@ -1,16 +1,12 @@
 var Player = (function () {
-  var notMovingVector = new THREE.Vector3(0, 0, 0);
-  var target = new THREE.Vector3(0, 0, 0);
-  var target2 = new THREE.Vector3(0, 0, 0);
+  var notMovingVector = new BABYLON.Vector3(0, 0, 0);
+  var target = new BABYLON.Vector3(0, 0, 0);
+  var target2 = new BABYLON.Vector3(0, 0, 0);
 
   function Player (parent) {
-    var geometry = new THREE.BoxGeometry(1, 1, 1);
-
-    this.mat = Physijs.createMaterial(
-      new THREE.MeshPhongMaterial({ color: 0xffff00 }),
-      8,
-      10
-    );
+    this.mesh = new BABYLON.Mesh.CreateBox("player", 1, parent);
+    this.mesh.diffuseColor = new BABYLON.Color3(1, 1, 0);
+    this.mesh.position.y = 0.5;
 
     var colours = {
       4: [1, 0.7],
@@ -19,31 +15,27 @@ var Player = (function () {
       1: [0.8, 0],
       0: [0.6, 0]
     };
+    this.parent = parent;
 
-    this.mesh = new Physijs.BoxMesh(geometry, this.mat);
-    this.mesh.position.y = 0.5;
-    parent.add(this.mesh);
+    this.mesh.collisionsEnabled = true;
+
     var _this = this;
-    var zero = new THREE.Vector3(0, 0, 0);
+    var zero = new BABYLON.Vector3(0, 0, 0);
     this.health = 5;
-    this.velVector = new THREE.Vector3();
-    this.mesh.addEventListener('collision', function (other_object, relative_velocity, relative_rotation, contact_normal) {
-      _this.mesh.setLinearVelocity(zero);
-      _this.mesh.setAngularVelocity(zero);
-
-      if (other_object.name === "enemy") {
-        if (_this.health > 0) {
-          _this.health--;
-          _this.mat.color.r = colours[_this.health][0];
-          _this.mat.color.g = colours[_this.health][1];
-        }
-        else {
-          scene.removeEvents();
-          scene.showEndScreen();
-        }
-      }
-    });
+    this.velVector = new BABYLON.Vector3();
     this.lastLaserTime = 0;
+  }
+
+  Player.prototype.takeHit = function () {
+    if (this.health > 0) {
+      this.health--;
+      this.mesh.diffuseColor.r = colours[_this.health][0];
+      this.mesh.diffuseColor.g = colours[_this.health][1];
+    }
+    else {
+      scene.removeEvents();
+      scene.showEndScreen();
+    }
   }
 
   Player.prototype.update = function () {
@@ -62,17 +54,17 @@ var Player = (function () {
       var angle = Math.atan2(p2.z - p1.z, p2.x - p1.x);
       var velX = Math.cos(angle) * 20;
       var velZ = Math.sin(angle) * 20;
-      this.velVector.set(velX, 0, velZ);
-      this.mesh.setLinearVelocity(this.velVector);
+      this.velVector.copyFromFloats(velX, 0, velZ);
+      this.mesh.moveWithCollisions(this.velVector);
 
       if ((scene.mouseControls.touches[1].down || scene.keyControls.isPressed("SPACE")) && scene.timestamp - this.lastLaserTime > 200) {
         this.lastLaserTime = scene.timestamp;
-        scene.addLaser(new Laser(angle, Math.cos(angle), Math.sin(angle), this.mesh.position));
+        scene.addLaser(new Laser(this.parent, angle, Math.cos(angle), Math.sin(angle), this.mesh.position));
       }
     }
     else {
       notMovingVector.y = this.mesh.getLinearVelocity().y;
-      this.mesh.setLinearVelocity(notMovingVector);
+      this.mesh.moveWithCollisions(notMovingVector);
     }
   }
 

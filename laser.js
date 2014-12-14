@@ -1,13 +1,8 @@
 var Laser = (function () {
-  function Laser (angle, velX, velZ, playerPos) {
-    var geometry = new THREE.BoxGeometry(1.5, 0.5, 0.5);
-    var mat = Physijs.createMaterial(
-      new THREE.MeshLambertMaterial({ color: 0x00ff00 }),
-      1,
-      0.2
-    );
-
-    this.mesh = new Physijs.BoxMesh(geometry, mat);
+  function Laser (scene, angle, velX, velZ, playerPos) {
+    this.mesh = new BABYLON.Mesh("laser", scene);
+    this.mesh.applyToMesh(CreateVariableBox(1.5, 0.5, 0.5));
+    this.mesh.diffuseColor = new BABYLON.Color3(0, 1, 0);
     var x = playerPos.x;
     var z = playerPos.z;
     if (velX >= 0) {
@@ -22,11 +17,10 @@ var Laser = (function () {
     else {
       z -= 1.5;
     }
-    this.mesh.position.set(x, 1, z);
+    this.mesh.position.copyFromFloats(x, 1, z);
     this.mesh.rotation.y -= angle;
-    this.impulseVector = new THREE.Vector3(velX * 10, 0, velZ * 10);
-    var _this = this;
-    this.mesh.name = "laser";
+    this.impulseVector = new BABYLON.Vector3(velX * 10, 0, velZ * 10);
+    this.mesh.collisionsEnabled = true;
   }
 
   return Laser;
