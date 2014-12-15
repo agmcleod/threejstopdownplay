@@ -1,11 +1,11 @@
 function CreateVariableBox (x, y, z) {
   var normalsSource = [
-    new BABYLON.Vector3(0, 0, z),
-    new BABYLON.Vector3(0, 0, -z),
-    new BABYLON.Vector3(x, 0, 0),
-    new BABYLON.Vector3(-x, 0, 0),
-    new BABYLON.Vector3(0, y, 0),
-    new BABYLON.Vector3(0, -y, 0)
+    new BABYLON.Vector3(0, 0, 1),
+    new BABYLON.Vector3(0, 0, -1),
+    new BABYLON.Vector3(1, 0, 0),
+    new BABYLON.Vector3(-1, 0, 0),
+    new BABYLON.Vector3(0, 1, 0),
+    new BABYLON.Vector3(0, -1, 0)
   ];
 
   var indices = [];
@@ -33,15 +33,15 @@ function CreateVariableBox (x, y, z) {
     var size;
 
     if (normal.x !== 0) {
-      size = normal.x;
+      size = x;
     }
 
     if (normal.y !== 0) {
-      size = normal.y;
+      size = y;
     }
 
     if (normal.z !== 0) {
-      size = normal.z;
+      size = z;
     }
 
     // Four vertices per face.

@@ -116,12 +116,10 @@ var GameScene = (function () {
   }
 
   GameScene.prototype.addObjects = function () {
-    this.camera = new BABYLON.FollowCamera("FollowCam", new BABYLON.Vector3(0, 0, 0), this.scene);
-    this.camera.radius = 30;
-    this.camera.heightOffset = 20;
+    this.camera = new BABYLON.FollowCamera("FollowCam", new BABYLON.Vector3(0, 20, 0), this.scene);
 
     var plane = new BABYLON.Mesh.CreateGround("ground", 70, 70, 2, this.scene);
-    plane.diffuseColor = new BABYLON.Color3(0, 0, 0); // new BABYLON.Color3(0, 0, 0);
+    plane.diffuseColor = new BABYLON.Color3(0, 0, 0);
     this.plane = plane;
 
     this.addLighting();
@@ -138,7 +136,7 @@ var GameScene = (function () {
     for (var i = 0; i < 20; i++) {
       this.addEnemy(cubeTrackArray);
     }
-    // this.addWalls();
+    this.addWalls();
   }
 
   GameScene.prototype.addWalls = function () {
