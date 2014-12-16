@@ -116,7 +116,7 @@ var GameScene = (function () {
   }
 
   GameScene.prototype.addObjects = function () {
-    this.camera = new BABYLON.TopDownCamera("FollowCam", new BABYLON.Vector3(0, 20, 0), this.scene);
+    this.camera = new BABYLON.FreeCamera("FollowCam", new BABYLON.Vector3(0, 0, 0), this.scene);
 
     var plane = new BABYLON.Mesh.CreateGround("ground", 70, 70, 2, this.scene);
     plane.diffuseColor = new BABYLON.Color3(0, 0, 0);
@@ -130,7 +130,9 @@ var GameScene = (function () {
     }
 
     this.player = new Player(this.scene);
-    this.camera.target = this.player.mesh;
+    this.camera.parent = this.player;
+    this.camera.position.y = 20;
+    this.camera.rotation.z = Math.PI / 4;
     this.scene.activeCamera = this.camera;
     this.scene.activeCamera.attachControl(this.canvas);
 
