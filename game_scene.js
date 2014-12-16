@@ -116,9 +116,7 @@ var GameScene = (function () {
   }
 
   GameScene.prototype.addObjects = function () {
-    this.camera = new BABYLON.FollowCamera("FollowCam", new BABYLON.Vector3(0, 0, 0), this.scene);
-    this.camera.heightOffset = 20;
-    this.camera.rotationOffset = 0;
+    this.camera = new BABYLON.TopDownCamera("FollowCam", new BABYLON.Vector3(0, 20, 0), this.scene);
 
     var plane = new BABYLON.Mesh.CreateGround("ground", 70, 70, 2, this.scene);
     plane.diffuseColor = new BABYLON.Color3(0, 0, 0);
@@ -134,6 +132,7 @@ var GameScene = (function () {
     this.player = new Player(this.scene);
     this.camera.target = this.player.mesh;
     this.scene.activeCamera = this.camera;
+    this.scene.activeCamera.attachControl(this.canvas);
 
     for (var i = 0; i < 20; i++) {
       this.addEnemy(cubeTrackArray);
