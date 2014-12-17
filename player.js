@@ -34,10 +34,10 @@ var Player = (function () {
       this.mesh.material.diffuseColor.r = this.colours[this.health][0];
       this.mesh.material.diffuseColor.g = this.colours[this.health][1];
     }
-    /* else {
+    else {
       scene.removeEvents();
       scene.showEndScreen();
-    } */
+    } 
   }
 
   Player.prototype.update = function () {
@@ -56,6 +56,7 @@ var Player = (function () {
       var angle = Math.atan2(p2.z - p1.z, p2.x - p1.x);
       var velX = Math.cos(angle) * 20;
       var velZ = Math.sin(angle) * 20;
+      console.log(p2.x, p2.z, p1.x, p1.z);
       this.velVector.copyFromFloats(velX, 0, velZ);
       this.mesh.moveWithCollisions(this.velVector);
 

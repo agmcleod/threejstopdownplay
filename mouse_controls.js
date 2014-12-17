@@ -164,11 +164,13 @@
       0.5
     );
 
-    BABYLON.Vector3.Project(
+    BABYLON.Vector3.Unproject(
       vector,
+      window.innerWidth,
+      window.innerHeight,
       window.scene.camera.getWorldMatrix(),
-      window.scene.scene.getTransformMatrix(),
-      window.scene.camera.viewport.toGlobal(window.scene.engine)
+      window.scene.scene.getViewMatrix(),
+      window.scene.camera.getProjectionMatrix()
     );
     var dir = vector.subtract(camera.position).normalize();
     var distance = - camera.position.y / dir.y;

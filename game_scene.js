@@ -182,51 +182,6 @@ var GameScene = (function () {
     this.keyControls.bindKey("SPACE");
   }
 
-  GameScene.prototype.checkCollisions = function () {
-    for (var l = this.lasers.length - 1; l >= 0; l--) {
-      var laser = this.lasers[l];
-      for (var i = this.walls.length - 1; i >= 0; i--) {
-        var wall = this.walls[i];
-        if (laser.mesh.intersectsMesh(wall, false)) {
-          laser.mesh.dispose();
-          this.lasers.splice(l, 1);
-        }
-      }
-
-      for (var i = this.cubes.length - 1; i >= 0; i--) {
-        var cube = this.cubes[i];
-        if (laser.intersectsMesh(cube, false)) {
-          laser.mesh.dispose();
-          this.lasers.splice(l, 1);
-        }
-      }
-
-      for (var i = this.enemies.length - 1; i >= 0; i--) {
-        var enemy = this.enemies[i];
-        if (laser.intersectsMesh(enemy.mesh, false)) {
-          laser.mesh.dispose();
-          this.lasers.splice(l, 1);
-          enemy.mesh.dispose();
-          this.enemies.splice(i, 1);
-        }
-      }
-    }
-
-    for (var i = this.enemies.length - 1; i >= 0; i--) {
-      var enemy = this.enemies[i];
-      for (var c = this.cubes.length - 1; c >= 0; c--) {
-        var cube = this.cubes[c];
-        if (cube.intersectsMesh(enemy.mesh, false)) {
-          enemy.changeDirection();
-        }
-      }
-
-      if (enemy.mesh.intersectsMesh(this.player.mesh, false)) {
-        this.player.takeHit();
-      }
-    }
-  }
-
   GameScene.prototype.dontRender = function () {
     this.dontRender = true;
   }
@@ -263,7 +218,6 @@ var GameScene = (function () {
       enemy.update();
     }
 
-    this.checkCollisions();
     this.scene.render();
   }
 
