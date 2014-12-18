@@ -37,7 +37,7 @@ var Player = (function () {
     else {
       scene.removeEvents();
       scene.showEndScreen();
-    } 
+    }
   }
 
   Player.prototype.update = function () {
@@ -47,16 +47,16 @@ var Player = (function () {
       var p1;
       if (!scene.isMobile) {
         p1 = this.mesh.position;
+        p1.y = p1.z;
       }
       else {
         var c2 = scene.mouseControls.moveOrigin;
         p1 = scene.mouseControls.coordsAsVector(c2.x, c2.y, scene.camera, target2);
       }
 
-      var angle = Math.atan2(p2.z - p1.z, p2.x - p1.x);
-      var velX = Math.cos(angle) * 20;
-      var velZ = Math.sin(angle) * 20;
-      console.log(p2.x, p2.z, p1.x, p1.z);
+      var angle = Math.atan2(p2.y - p1.y, p2.x - p1.x);
+      var velX = Math.cos(angle);
+      var velZ = Math.sin(angle);
       this.velVector.copyFromFloats(velX, 0, velZ);
       this.mesh.moveWithCollisions(this.velVector);
 

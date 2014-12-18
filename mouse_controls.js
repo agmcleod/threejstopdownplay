@@ -158,17 +158,12 @@
   }
 
   MouseControls.prototype.coordsAsVector = function (x, y, camera, target) {
-    var vector = new BABYLON.Vector3(
-      ( x / window.innerWidth ) * 2 - 1,
-      - ( y / window.innerHeight ) * 2 + 1,
-      0.5
-    );
-
+    var vector = new BABYLON.Vector3(x, y, 0.5);
     BABYLON.Vector3.Unproject(
       vector,
       window.innerWidth,
       window.innerHeight,
-      window.scene.camera.getWorldMatrix(),
+      BABYLON.Matrix.Identity(),
       window.scene.scene.getViewMatrix(),
       window.scene.camera.getProjectionMatrix()
     );
