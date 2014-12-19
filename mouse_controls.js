@@ -157,22 +157,6 @@
     window.addEventListener(activeEventList[POINTER_UP], upEvent);
   }
 
-  MouseControls.prototype.coordsAsVector = function (x, y, camera, target) {
-    var vector = new BABYLON.Vector3(x, y, 0.5);
-    BABYLON.Vector3.Unproject(
-      vector,
-      window.innerWidth,
-      window.innerHeight,
-      BABYLON.Matrix.Identity(),
-      window.scene.scene.getViewMatrix(),
-      window.scene.camera.getProjectionMatrix()
-    );
-    var dir = vector.subtract(camera.position).normalize();
-    var distance = - camera.position.y / dir.y;
-    target.copyFromFloats(camera.position.x, camera.position.y, camera.position.z)
-    return target.add(dir.multiplyByFloats(distance, distance, distance));;
-  }
-
   MouseControls.prototype.mouseDown = function () {
     return this.isDown;
   }

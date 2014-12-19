@@ -43,20 +43,27 @@ var Player = (function () {
   Player.prototype.update = function () {
     if (scene.mouseControls.isDown) {
       var coords = scene.mouseControls.touches[0];
-      var p2 = scene.mouseControls.coordsAsVector(coords.x, coords.y, scene.camera, target);
-      var p1;
+      var pickResult = window.scene.scene.pick(coords.x, coords.y);
+      if (pickResult.hit) {
+        p2 = pickResult.pickedPoint;
+      }
+      var p1, p2;
       if (!scene.isMobile) {
         p1 = this.mesh.position;
-        p1.y = p1.z;
       }
       else {
         var c2 = scene.mouseControls.moveOrigin;
-        p1 = scene.mouseControls.coordsAsVector(c2.x, c2.y, scene.camera, target2);
+        var pickedPoint2 = window.scene.scene.pick(c2.x, c2.y);
+        if (pickedPoint2.hit) {
+          p1 = pickedPoint2.pickedPoint;
+        }
       }
 
-      var angle = Math.atan2(p2.y - p1.y, p2.x - p1.x);
-      var velX = Math.cos(angle);
-      var velZ = Math.sin(angle);
+      console.log(p2.z);
+
+      var angle = Math.atan2(p2.z - p1.z, p2.x - p1.x);
+      var velX = Math.cos(angle) / 10;
+      var velZ = Math.sin(angle) / 10;
       this.velVector.copyFromFloats(velX, 0, velZ);
       this.mesh.moveWithCollisions(this.velVector);
 
