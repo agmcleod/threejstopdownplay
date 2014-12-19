@@ -73,7 +73,7 @@ var GameScene = (function () {
 
     cube.position.y = size / 2;
     cubeTrackArray.push({ x: cube.position.x, z: cube.position.z, size: size });
-  };
+  }
 
   GameScene.prototype.addEnemy = function (cubeTrackArray) {
     var attempts = 0;
@@ -104,7 +104,7 @@ var GameScene = (function () {
       }
     }
     this.enemies.push(new Enemy(this.scene, x, z));
-  };
+  }
 
   GameScene.prototype.addLaser = function (laser) {
     this.lasers.push(laser);
@@ -144,13 +144,13 @@ var GameScene = (function () {
 
   GameScene.prototype.addWalls = function () {
     var wallOne = new BABYLON.Mesh("wallone", this.scene);
-    CreateVariableBox(70, 5, 1).applyToMesh(wallOne);
+    CreateVariableBox(70, 1, 5).applyToMesh(wallOne);
     wallOne.position.copyFromFloats(1, 2.5, -35);
     wallOne.diffuseColor = new BABYLON.Color3(1, 1, 1);
     wallOne.collisionsEnabled = true;
 
     var wallTwo = new BABYLON.Mesh("walltwo", this.scene);
-    CreateVariableBox(70, 5, 1).applyToMesh(wallTwo);
+    CreateVariableBox(70, 1, 5).applyToMesh(wallTwo);
     wallTwo.position.copyFromFloats(1, 2.5, 35);
     wallTwo.diffuseColor = new BABYLON.Color3(1, 1, 1);
     wallTwo.collisionsEnabled = true;

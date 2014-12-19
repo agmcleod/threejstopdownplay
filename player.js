@@ -44,10 +44,10 @@ var Player = (function () {
     if (scene.mouseControls.isDown) {
       var coords = scene.mouseControls.touches[0];
       var pickResult = window.scene.scene.pick(coords.x, coords.y);
+      var p1, p2;
       if (pickResult.hit) {
         p2 = pickResult.pickedPoint;
       }
-      var p1, p2;
       if (!scene.isMobile) {
         p1 = this.mesh.position;
       }
@@ -59,7 +59,9 @@ var Player = (function () {
         }
       }
 
-      console.log(p2.z);
+      if (!p1 || !p2) {
+        return;
+      }
 
       var angle = Math.atan2(p2.z - p1.z, p2.x - p1.x);
       var velX = Math.cos(angle) / 4;

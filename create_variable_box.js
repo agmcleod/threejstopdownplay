@@ -1,11 +1,11 @@
 function CreateVariableBox (x, y, z) {
   var normalsSource = [
-    new BABYLON.Vector3(0, 0, 1),
-    new BABYLON.Vector3(0, 0, -1),
-    new BABYLON.Vector3(1, 0, 0),
-    new BABYLON.Vector3(-1, 0, 0),
-    new BABYLON.Vector3(0, 1, 0),
-    new BABYLON.Vector3(0, -1, 0)
+    new BABYLON.Vector3(0, 0, z),
+    new BABYLON.Vector3(0, 0, -z),
+    new BABYLON.Vector3(x, 0, 0),
+    new BABYLON.Vector3(-x, 0, 0),
+    new BABYLON.Vector3(0, y, 0),
+    new BABYLON.Vector3(0, -y, 0)
   ];
 
   var indices = [];
@@ -30,37 +30,23 @@ function CreateVariableBox (x, y, z) {
     indices.push(verticesLength + 2);
     indices.push(verticesLength + 3);
 
-    var size;
-
-    if (normal.x !== 0) {
-      size = x;
-    }
-
-    if (normal.y !== 0) {
-      size = y;
-    }
-
-    if (normal.z !== 0) {
-      size = z;
-    }
-
     // Four vertices per face.
-    var vertex = normal.subtract(side1).subtract(side2).scale(size / 2);
+    var vertex = normal.subtract(side1).subtract(side2);
     positions.push(vertex.x, vertex.y, vertex.z);
     normals.push(normal.x, normal.y, normal.z);
     uvs.push(1.0, 1.0);
 
-    vertex = normal.subtract(side1).add(side2).scale(size / 2);
+    vertex = normal.subtract(side1).add(side2);
     positions.push(vertex.x, vertex.y, vertex.z);
     normals.push(normal.x, normal.y, normal.z);
     uvs.push(0.0, 1.0);
 
-    vertex = normal.add(side1).add(side2).scale(size / 2);
+    vertex = normal.add(side1).add(side2);
     positions.push(vertex.x, vertex.y, vertex.z);
     normals.push(normal.x, normal.y, normal.z);
     uvs.push(0.0, 0.0);
 
-    vertex = normal.add(side1).subtract(side2).scale(size / 2);
+    vertex = normal.add(side1).subtract(side2);
     positions.push(vertex.x, vertex.y, vertex.z);
     normals.push(normal.x, normal.y, normal.z);
     uvs.push(1.0, 0.0);
