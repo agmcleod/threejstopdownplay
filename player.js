@@ -41,36 +41,9 @@ var Player = (function () {
   }
 
   Player.prototype.update = function () {
-    if (scene.mouseControls.isDown) {
-      var coords = scene.mouseControls.touches[0];
-      var pickResult = window.scene.scene.pick(coords.x, coords.y);
-      if (pickResult.hit) {
-        p2 = pickResult.pickedPoint;
-      }
-      var p1, p2;
-      if (!scene.isMobile) {
-        p1 = this.mesh.position;
-      }
-      else {
-        var c2 = scene.mouseControls.moveOrigin;
-        var pickedPoint2 = window.scene.scene.pick(c2.x, c2.y);
-        if (pickedPoint2.hit) {
-          p1 = pickedPoint2.pickedPoint;
-        }
-      }
-
-      console.log(p2.z);
-
-      var angle = Math.atan2(p2.z - p1.z, p2.x - p1.x);
-      var velX = Math.cos(angle) / 10;
-      var velZ = Math.sin(angle) / 10;
-      this.velVector.copyFromFloats(velX, 0, velZ);
-      this.mesh.moveWithCollisions(this.velVector);
-
-      if ((scene.mouseControls.touches[1].down || scene.keyControls.isPressed("SPACE")) && scene.timestamp - this.lastLaserTime > 200) {
-        this.lastLaserTime = scene.timestamp;
-        scene.addLaser(new Laser(this.parent, angle, Math.cos(angle), Math.sin(angle), this.mesh.position));
-      }
+    if (scene.mouseControls.isDown && (scene.mouseControls.touches[1].down || scene.keyControls.isPressed("SPACE")) && scene.timestamp - this.lastLaserTime > 200) {
+      this.lastLaserTime = scene.timestamp;
+      scene.addLaser(new Laser(this.parent, angle, Math.cos(angle), Math.sin(angle), this.mesh.position));
     }
   }
 

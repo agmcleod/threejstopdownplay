@@ -113,6 +113,7 @@ var GameScene = (function () {
   GameScene.prototype.addLighting = function () {
     this.cameraLight = new BABYLON.PointLight("light", new BABYLON.Vector3(0, 1, 0), this.scene);
     this.cameraLight.diffuse = new BABYLON.Color3(1, 1, 1);
+    this.cameraLight.parent = this.player.mesh;
   }
 
   GameScene.prototype.addObjects = function () {
@@ -122,7 +123,6 @@ var GameScene = (function () {
     plane.diffuseColor = new BABYLON.Color3(0, 0, 0);
     this.plane = plane;
 
-    this.addLighting();
     var cubeTrackArray = [];
     this.cubes = [];
     for (var i = 0; i < 35; i++) {
@@ -130,7 +130,6 @@ var GameScene = (function () {
     }
 
     this.player = new Player(this.scene);
-    this.camera.parent = this.player;
     this.camera.position.y = 20;
     this.camera.cameraRotation.x = (Math.PI / 4);
     this.scene.activeCamera = this.camera;
@@ -138,6 +137,7 @@ var GameScene = (function () {
     for (var i = 0; i < 20; i++) {
       this.addEnemy(cubeTrackArray);
     }
+    this.addLighting();
     this.addWalls();
   }
 
@@ -211,6 +211,7 @@ var GameScene = (function () {
     }
     this.timestamp = timestamp;
 
+    this.updateCamera();
     this.player.update();
 
     for (var i = this.enemies.length - 1; i >= 0; i--) {
@@ -254,6 +255,35 @@ var GameScene = (function () {
       window.scene = new GameScene();
       requestAnimationFrame(scene.render.bind(scene));
     });
+  }
+
+  GameScene.prototype.updateCamera = function () {
+    if (this.mouseControls.isDown) {
+      var coords = scene.mouseControls.touches[0];
+      var pickResult = this.scene.pick(coords.x, coords.y);
+      if (pickResult.hit) {
+        p2 = pickResult.pickedPoint;
+      }
+      var p1, p2;
+      if (!this.isMobile) {
+        p1 = this.player.mesh.position;
+      }
+      else {
+        var c2 = this.mouseControls.moveOrigin;
+        var pickedPoint2 = this.scene.pick(c2.x, c2.y);
+        if (pickedPoint2.hit) {
+          p1 = pickedPoint2.pickedPoint;
+        }
+      }
+
+      var angle = Math.atan2(p2.z - p1.z, p2.x - p1.x);
+      var velX = Math.cos(angle) / 5;
+      var velZ = Math.sin(angle) / 5;
+      this.player.velVector.copyFromFloats(velX, 0, velZ);
+      this.player.mesh.moveWithCollisions(this.player.velVector);
+      this.camera.position.x = this.player.mesh.position.x;
+      this.camera.position.z = this.player.mesh.position.z;
+    }
   }
 
   return GameScene;
