@@ -143,26 +143,22 @@ var GameScene = (function () {
   }
 
   GameScene.prototype.addWalls = function () {
-    var wallOne = new BABYLON.Mesh("wallone", this.scene);
-    CreateVariableBox(70, 1, 5).applyToMesh(wallOne);
+    var wallOne = CreateVariableBox(this.scene, 70, 5, 1);
     wallOne.position.copyFromFloats(1, 2.5, -35);
     wallOne.diffuseColor = new BABYLON.Color3(1, 1, 1);
     wallOne.collisionsEnabled = true;
 
-    var wallTwo = new BABYLON.Mesh("walltwo", this.scene);
-    CreateVariableBox(70, 1, 5).applyToMesh(wallTwo);
+    var wallTwo = CreateVariableBox(this.scene, 70, 5, 1);
     wallTwo.position.copyFromFloats(1, 2.5, 35);
     wallTwo.diffuseColor = new BABYLON.Color3(1, 1, 1);
     wallTwo.collisionsEnabled = true;
 
-    var wallThree = new BABYLON.Mesh("walltwo", this.scene);
-    CreateVariableBox(1, 5, 70).applyToMesh(wallThree);
+    var wallThree = CreateVariableBox(this.scene, 1, 5, 70);
     wallThree.position.copyFromFloats(35, 2.5, 1);
     wallThree.diffuseColor = new BABYLON.Color3(1, 1, 1);
     wallThree.collisionsEnabled = true;
 
-    var wallFour = new BABYLON.Mesh("walltwo", this.scene);
-    CreateVariableBox(1, 5, 70).applyToMesh(wallFour);
+    var wallFour = CreateVariableBox(this.scene, 1, 5, 70);
     wallFour.position.copyFromFloats(-35, 2.5, 1);
     wallFour.diffuseColor = new BABYLON.Color3(1, 1, 1);
     wallFour.collisionsEnabled = true;
