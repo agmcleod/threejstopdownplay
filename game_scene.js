@@ -130,6 +130,7 @@ var GameScene = (function () {
     }
 
     this.player = new Player(this.scene);
+    this.camera.parent = this.player.mesh;
     this.camera.position.y = 20;
     this.camera.cameraRotation.x = (Math.PI / 4);
     this.scene.activeCamera = this.camera;
@@ -211,7 +212,6 @@ var GameScene = (function () {
     }
     this.timestamp = timestamp;
 
-    this.updateCamera();
     this.player.update();
 
     for (var i = this.enemies.length - 1; i >= 0; i--) {
@@ -255,35 +255,6 @@ var GameScene = (function () {
       window.scene = new GameScene();
       requestAnimationFrame(scene.render.bind(scene));
     });
-  }
-
-  GameScene.prototype.updateCamera = function () {
-    if (this.mouseControls.isDown) {
-      var coords = scene.mouseControls.touches[0];
-      var pickResult = this.scene.pick(coords.x, coords.y);
-      if (pickResult.hit) {
-        p2 = pickResult.pickedPoint;
-      }
-      var p1, p2;
-      if (!this.isMobile) {
-        p1 = this.player.mesh.position;
-      }
-      else {
-        var c2 = this.mouseControls.moveOrigin;
-        var pickedPoint2 = this.scene.pick(c2.x, c2.y);
-        if (pickedPoint2.hit) {
-          p1 = pickedPoint2.pickedPoint;
-        }
-      }
-
-      var angle = Math.atan2(p2.z - p1.z, p2.x - p1.x);
-      var velX = Math.cos(angle) / 5;
-      var velZ = Math.sin(angle) / 5;
-      this.player.velVector.copyFromFloats(velX, 0, velZ);
-      this.player.mesh.moveWithCollisions(this.player.velVector);
-      this.camera.position.x = this.player.mesh.position.x;
-      this.camera.position.z = this.player.mesh.position.z;
-    }
   }
 
   return GameScene;
