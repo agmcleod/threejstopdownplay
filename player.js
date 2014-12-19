@@ -62,8 +62,8 @@ var Player = (function () {
       console.log(p2.z);
 
       var angle = Math.atan2(p2.z - p1.z, p2.x - p1.x);
-      var velX = Math.cos(angle) / 10;
-      var velZ = Math.sin(angle) / 10;
+      var velX = Math.cos(angle) / 4;
+      var velZ = Math.sin(angle) / 4;
       this.velVector.copyFromFloats(velX, 0, velZ);
       this.mesh.moveWithCollisions(this.velVector);
 

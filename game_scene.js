@@ -113,6 +113,7 @@ var GameScene = (function () {
   GameScene.prototype.addLighting = function () {
     this.cameraLight = new BABYLON.PointLight("light", new BABYLON.Vector3(0, 1, 0), this.scene);
     this.cameraLight.diffuse = new BABYLON.Color3(1, 1, 1);
+    this.cameraLight.parent = this.player.mesh;
   }
 
   GameScene.prototype.addObjects = function () {
@@ -122,7 +123,6 @@ var GameScene = (function () {
     plane.diffuseColor = new BABYLON.Color3(0, 0, 0);
     this.plane = plane;
 
-    this.addLighting();
     var cubeTrackArray = [];
     this.cubes = [];
     for (var i = 0; i < 35; i++) {
@@ -130,7 +130,7 @@ var GameScene = (function () {
     }
 
     this.player = new Player(this.scene);
-    this.camera.parent = this.player;
+    this.camera.parent = this.player.mesh;
     this.camera.position.y = 20;
     this.camera.cameraRotation.x = (Math.PI / 4);
     this.scene.activeCamera = this.camera;
@@ -138,6 +138,7 @@ var GameScene = (function () {
     for (var i = 0; i < 20; i++) {
       this.addEnemy(cubeTrackArray);
     }
+    this.addLighting();
     this.addWalls();
   }
 
