@@ -68,12 +68,12 @@ var GameScene = (function () {
 
     var cube = new BABYLON.Mesh.CreateBox("box", size, this.scene);
     cube.position = coords;
-    cube.ellipsoid = new BABYLON.Vector3(0.5, 1.0, 0.5);
     var material = new BABYLON.StandardMaterial("cubeMat", this.scene);
     material.diffuseColor = new BABYLON.Color3(Math.random(), Math.random(), Math.random());
     cube.material = material;
 
     cube.checkCollisions = true;
+    cube.ellipsoid = new BABYLON.Vector3(0.5, 1.0, 0.5);
     cubeTrackArray.push({ x: cube.position.x, z: cube.position.z, size: size });
   }
 
@@ -105,7 +105,7 @@ var GameScene = (function () {
         return;
       }
     }
-    this.enemies.push(new Enemy(this.scene, x, z));
+    this.enemies.push(new Enemy(this, x, z));
   }
 
   GameScene.prototype.addLaser = function (laser) {
@@ -131,26 +131,28 @@ var GameScene = (function () {
     plane.diffuseColor = new BABYLON.Color3(0, 0, 0);
     this.plane = plane;
 
+    this.player = new Player(this.scene);
+    this.addLighting();
+    if (!this.debugCam) {
+      this.camera.parent = this.player.mesh;
+      this.camera.position.y = 20;
+      this.camera.cameraRotation.x = (Math.PI / 4);
+    }
+
+    this.scene.activeCamera = this.camera;
+
     var cubeTrackArray = [];
     this.cubes = [];
     for (var i = 0; i < 35; i++) {
       this.addCube(cubeTrackArray);
     }
 
-    this.player = new Player(this.scene);
-    if (!this.debugCam) {
-      this.camera.parent = this.player.mesh;
-      this.camera.position.y = 20;
-      this.camera.cameraRotation.x = (Math.PI / 4);  
-    }
-    
-    this.scene.activeCamera = this.camera;
-
     for (var i = 0; i < 20; i++) {
       this.addEnemy(cubeTrackArray);
     }
-    this.addLighting();
+
     this.addWalls();
+    this.plane.receiveShadows = true;
   }
 
   GameScene.prototype.addWalls = function () {
@@ -209,11 +211,10 @@ var GameScene = (function () {
     this.scene.remove(obj);
   }
 
-  GameScene.prototype.render = function (timestamp) {
+  GameScene.prototype.render = function () {
     if (this.dontRender === true) {
       return false;
     }
-    this.timestamp = timestamp;
 
     this.player.update();
 

@@ -71,8 +71,8 @@ var Player = (function () {
       this.velVector.copyFromFloats(velX, 0, velZ);
       this.mesh.moveWithCollisions(this.velVector);
 
-      if ((scene.mouseControls.touches[1].down || scene.keyControls.isPressed("SPACE")) && scene.timestamp - this.lastLaserTime > 200) {
-        this.lastLaserTime = scene.timestamp;
+      if ((scene.mouseControls.touches[1].down || scene.keyControls.isPressed("SPACE")) && Date.now() - this.lastLaserTime > 200) {
+        this.lastLaserTime = Date.now();
         scene.addLaser(new Laser(this.parent, angle, Math.cos(angle), Math.sin(angle), this.mesh.position));
       }
     }
