@@ -36,6 +36,8 @@ var Enemy = (function () {
       zVel
     );
     this.mesh.collisionsEnabled = true;
+    this.mesh.ellipsoid = new BABYLON.Vector3(0.5, 1, 0.5);
+    this.mesh.ellipsoidOffset = new BABYLON.Vector3(0, 1.0, 0);
   }
 
   Enemy.prototype.changeDirection = function () {
@@ -46,7 +48,7 @@ var Enemy = (function () {
   }
 
   Enemy.prototype.update = function () {
-    //this.mesh.moveWithCollisions(this.dir);
+    this.mesh.moveWithCollisions(this.dir);
   }
 
   return Enemy;

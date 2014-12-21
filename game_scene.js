@@ -73,6 +73,7 @@ var GameScene = (function () {
     cube.material = material;
 
     cube.checkCollisions = true;
+    cube.ellipsoid = new BABYLON.Vector3(0.5, 1, 0.5);
     cubeTrackArray.push({ x: cube.position.x, z: cube.position.z, size: size });
   }
 
@@ -119,7 +120,7 @@ var GameScene = (function () {
 
   GameScene.prototype.addObjects = function () {
     if (this.debugCam) {
-      this.camera = new BABYLON.FreeCamera("FreeCamera", new BABYLON.Vector3(0, 1, -15), this.scene);
+      this.camera = new BABYLON.FreeCamera("FreeCamera", new BABYLON.Vector3(0, 1, -7), this.scene);
       this.camera.attachControl(this.canvas);
     }
     else {

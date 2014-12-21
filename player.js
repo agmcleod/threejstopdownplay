@@ -25,7 +25,14 @@ var Player = (function () {
     var _this = this;
     var zero = new BABYLON.Vector3(0, 0, 0);
     this.health = 5;
-    this.velVector = new BABYLON.Vector3();
+    if (window.location.hash.indexOf('debug') !== -1) {
+      this.velVector = new BABYLON.Vector3(0.2, 0, 0.2);
+    }
+    else {
+      this.velVector = new BABYLON.Vector3(0, 0, 0);
+    }
+    this.mesh.ellipsoid = new BABYLON.Vector3(0.5, 1, 0.5);
+    this.mesh.ellipsoidOffset = new BABYLON.Vector3(0, 1.0, 0);
     this.lastLaserTime = 0;
   }
 
@@ -42,6 +49,10 @@ var Player = (function () {
   }
 
   Player.prototype.update = function () {
+    if (scene.debugCam) {
+      this.mesh.moveWithCollisions(this.velVector);
+      this.mesh.position.y = 0.5;
+    }
     if (scene.mouseControls.isDown && !scene.debugCam) {
       var coords = scene.mouseControls.touches[0];
       var pickResult = window.scene.scene.pick(coords.x, coords.y);
@@ -69,6 +80,7 @@ var Player = (function () {
       var velZ = Math.sin(angle) / 4;
       this.velVector.copyFromFloats(velX, 0, velZ);
       this.mesh.moveWithCollisions(this.velVector);
+      this.mesh.position.y = 0.5;
 
       if ((scene.mouseControls.touches[1].down || scene.keyControls.isPressed("SPACE")) && Date.now() - this.lastLaserTime > 200) {
         this.lastLaserTime = Date.now();
