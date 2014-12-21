@@ -20,7 +20,7 @@ var Player = (function () {
     };
     this.parent = parent;
 
-    this.mesh.collisionsEnabled = true;
+    this.mesh.checkCollisions = true;
 
     var _this = this;
     var zero = new BABYLON.Vector3(0, 0, 0);
