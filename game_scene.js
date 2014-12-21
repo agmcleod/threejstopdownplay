@@ -68,6 +68,7 @@ var GameScene = (function () {
 
     var cube = new BABYLON.Mesh.CreateBox("box", size, this.scene);
     cube.position = coords;
+    cube.ellipsoid = new BABYLON.Vector3(0.5, 1.0, 0.5);
     var material = new BABYLON.StandardMaterial("cubeMat", this.scene);
     material.diffuseColor = new BABYLON.Color3(Math.random(), Math.random(), Math.random());
     cube.material = material;
@@ -155,22 +156,18 @@ var GameScene = (function () {
   GameScene.prototype.addWalls = function () {
     var wallOne = CreateVariableBox(this.scene, 70, 5, 1);
     wallOne.position.copyFromFloats(1, 2.5, -34);
-    wallOne.diffuseColor = new BABYLON.Color3(1, 1, 1);
     wallOne.checkCollisions = true;
 
     var wallTwo = CreateVariableBox(this.scene, 70, 5, 1);
     wallTwo.position.copyFromFloats(1, 2.5, 36);
-    wallTwo.diffuseColor = new BABYLON.Color3(1, 1, 1);
     wallTwo.checkCollisions = true;
 
     var wallThree = CreateVariableBox(this.scene, 1, 5, 70);
     wallThree.position.copyFromFloats(36, 2.5, 1);
-    wallThree.diffuseColor = new BABYLON.Color3(1, 1, 1);
     wallThree.checkCollisions = true;
 
     var wallFour = CreateVariableBox(this.scene, 1, 5, 70);
     wallFour.position.copyFromFloats(-34, 2.5, 1);
-    wallFour.diffuseColor = new BABYLON.Color3(1, 1, 1);
     wallFour.checkCollisions = true;
 
     this.walls.push(wallOne);
