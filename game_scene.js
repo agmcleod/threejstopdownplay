@@ -6,6 +6,7 @@ var GameScene = (function () {
 
   function GameScene (engine, canvas) {
     this.canvas = canvas;
+    this.debugCam = window.location.hash.indexOf('debug') !== -1;
     this.scene = new BABYLON.Scene(engine);
     this.scene.collisionsEnabled = true;
     this.scene.clearColor = new BABYLON.Color3(0.8, 0.8, 0.8);
@@ -42,6 +43,7 @@ var GameScene = (function () {
   GameScene.prototype.addCube = function (cubeTrackArray) {
     var size = Math.ceil(Math.random() * 3);
     var cube = new BABYLON.Mesh.CreateBox("box", size, this.scene);
+    cube.position.y = size / 2;
     var material = new BABYLON.StandardMaterial("cubeMat", this.scene);
     material.diffuseColor = new BABYLON.Color3(Math.random(), Math.random(), Math.random());
     cube.material = material;
@@ -62,16 +64,13 @@ var GameScene = (function () {
 
       cube.position.x = getRandomCoordinate();
       cube.position.z = getRandomCoordinate();
-      cube.collisionsEnabled = true;
       attempts++;
-
       if (attempts > 10) {
         return;
       }
     }
 
-
-    cube.position.y = size / 2;
+    cube.checkCollisions = true;
     cubeTrackArray.push({ x: cube.position.x, z: cube.position.z, size: size });
   }
 
@@ -117,9 +116,15 @@ var GameScene = (function () {
   }
 
   GameScene.prototype.addObjects = function () {
-    this.camera = new BABYLON.TargetCamera("FollowCam", new BABYLON.Vector3(0, 0, 0), this.scene);
+    if (this.debugCam) {
+      this.camera = new BABYLON.FreeCamera("FreeCamera", new BABYLON.Vector3(0, 1, -15), this.scene);
+      this.camera.attachControl(this.canvas);
+    }
+    else {
+      this.camera = new BABYLON.TargetCamera("FollowCam", new BABYLON.Vector3(0, 0, 0), this.scene);
+    }
 
-    var plane = new BABYLON.Mesh.CreateGround("ground", 70, 70, 2, this.scene);
+    var plane = new BABYLON.Mesh.CreateGround("ground", 90, 90, 2, this.scene);
     plane.diffuseColor = new BABYLON.Color3(0, 0, 0);
     this.plane = plane;
 
@@ -130,9 +135,12 @@ var GameScene = (function () {
     }
 
     this.player = new Player(this.scene);
-    this.camera.parent = this.player.mesh;
-    this.camera.position.y = 20;
-    this.camera.cameraRotation.x = (Math.PI / 4);
+    if (!this.debugCam) {
+      this.camera.parent = this.player.mesh;
+      this.camera.position.y = 20;
+      this.camera.cameraRotation.x = (Math.PI / 4);  
+    }
+    
     this.scene.activeCamera = this.camera;
 
     for (var i = 0; i < 20; i++) {
@@ -146,22 +154,22 @@ var GameScene = (function () {
     var wallOne = CreateVariableBox(this.scene, 70, 5, 1);
     wallOne.position.copyFromFloats(1, 2.5, -35);
     wallOne.diffuseColor = new BABYLON.Color3(1, 1, 1);
-    wallOne.collisionsEnabled = true;
+    wallOne.checkCollisions = true;
 
     var wallTwo = CreateVariableBox(this.scene, 70, 5, 1);
     wallTwo.position.copyFromFloats(1, 2.5, 35);
     wallTwo.diffuseColor = new BABYLON.Color3(1, 1, 1);
-    wallTwo.collisionsEnabled = true;
+    wallTwo.checkCollisions = true;
 
     var wallThree = CreateVariableBox(this.scene, 1, 5, 70);
     wallThree.position.copyFromFloats(35, 2.5, 1);
     wallThree.diffuseColor = new BABYLON.Color3(1, 1, 1);
-    wallThree.collisionsEnabled = true;
+    wallThree.checkCollisions = true;
 
     var wallFour = CreateVariableBox(this.scene, 1, 5, 70);
     wallFour.position.copyFromFloats(-35, 2.5, 1);
     wallFour.diffuseColor = new BABYLON.Color3(1, 1, 1);
-    wallFour.collisionsEnabled = true;
+    wallFour.checkCollisions = true;
 
     this.walls.push(wallOne);
     this.walls.push(wallTwo);

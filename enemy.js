@@ -5,7 +5,7 @@ var Enemy = (function () {
     var material = new BABYLON.StandardMaterial("enemyMat", parent);
     material.diffuseColor = new BABYLON.Color3(1, 0, 0);
     this.mesh.material = material;
-    this.mesh.position.copyFromFloats(x, 1, z);
+    this.mesh.position.copyFromFloats(x, 0.5, z);
     var zero = new BABYLON.Vector3(0, 0, 0);
     var xVel, zVel;
     var r = ~~(Math.random() * 3);

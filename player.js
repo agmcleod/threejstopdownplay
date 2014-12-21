@@ -6,7 +6,8 @@ var Player = (function () {
   function Player (parent) {
     this.mesh = new BABYLON.Mesh.CreateBox("player", 1, parent);
     var mat = new BABYLON.StandardMaterial("playerMat", parent);
-    mat.diffuseColor = new BABYLON.Color3(1, 1, 0);
+    mat.diffuseColor = new BABYLON.Color3(0, 0, 0);
+    mat.emissiveColor = new BABYLON.Color3(0.7, 0.7, 0);
     this.mesh.material = mat;
     this.mesh.position.y = 0.5;
 
@@ -41,7 +42,7 @@ var Player = (function () {
   }
 
   Player.prototype.update = function () {
-    if (scene.mouseControls.isDown) {
+    if (scene.mouseControls.isDown && !scene.debugCam) {
       var coords = scene.mouseControls.touches[0];
       var pickResult = window.scene.scene.pick(coords.x, coords.y);
       var p1, p2;
