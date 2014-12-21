@@ -21,7 +21,6 @@ var Player = (function () {
     this.parent = parent;
 
     this.mesh.checkCollisions = true;
-    this.mesh.ellipsoid = new BABYLON.Vector3(0.5, 1.0, 0.5);
 
     var _this = this;
     var zero = new BABYLON.Vector3(0, 0, 0);

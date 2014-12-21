@@ -73,7 +73,6 @@ var GameScene = (function () {
     cube.material = material;
 
     cube.checkCollisions = true;
-    cube.ellipsoid = new BABYLON.Vector3(0.5, 1.0, 0.5);
     cubeTrackArray.push({ x: cube.position.x, z: cube.position.z, size: size });
   }
 
@@ -130,6 +129,7 @@ var GameScene = (function () {
     var plane = new BABYLON.Mesh.CreateGround("ground", 90, 90, 2, this.scene);
     plane.diffuseColor = new BABYLON.Color3(0, 0, 0);
     this.plane = plane;
+    this.plane.checkCollisions = true;
 
     this.player = new Player(this.scene);
     this.addLighting();
@@ -152,7 +152,6 @@ var GameScene = (function () {
     }
 
     this.addWalls();
-    this.plane.receiveShadows = true;
   }
 
   GameScene.prototype.addWalls = function () {
