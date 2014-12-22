@@ -1,5 +1,5 @@
 var Enemy = (function () {
-  var VEL = 10;
+  var VEL = 0.1;
   function Enemy (gameScene, x, z) {
     this.mesh = BABYLON.Mesh.CreateSphere("sphere", 20, 1, gameScene.scene);
     var material = new BABYLON.StandardMaterial("enemyMat", gameScene.scene);
@@ -49,6 +49,7 @@ var Enemy = (function () {
 
   Enemy.prototype.update = function () {
     this.mesh.moveWithCollisions(this.dir);
+    this.mesh.position.y = 0.5;
   }
 
   return Enemy;
