@@ -40,7 +40,7 @@ var GameScene = (function () {
       iOS || false;
   }
 
-  GameScene.prototype.addCube = function (cubeTrackArray) {
+  GameScene.prototype.addCube = function (cubes, cubeTrackArray) {
     var size = Math.ceil(Math.random() * 3);
     var coords = new BABYLON.Vector3(0, size / 2, 0);
     var attempts = 0;
@@ -75,6 +75,7 @@ var GameScene = (function () {
     cube.checkCollisions = true;
     cube.ellipsoid = new BABYLON.Vector3(0.5, 1, 0.5);
     cubeTrackArray.push({ x: cube.position.x, z: cube.position.z, size: size });
+    cubes.push(cube);
   }
 
   GameScene.prototype.addEnemy = function (cubeTrackArray) {
@@ -145,7 +146,7 @@ var GameScene = (function () {
     var cubeTrackArray = [];
     this.cubes = [];
     for (var i = 0; i < 35; i++) {
-      this.addCube(cubeTrackArray);
+      this.addCube(this.cubes, cubeTrackArray);
     }
 
     for (var i = 0; i < 20; i++) {
@@ -221,6 +222,20 @@ var GameScene = (function () {
     for (var i = this.enemies.length - 1; i >= 0; i--) {
       var enemy = this.enemies[i];
       enemy.update();
+
+      for (var c = this.cubes.length - 1; c >= 0; c--) {
+        var cube = this.cubes[c];
+        if (enemy.mesh.intersectsMesh(cube, false)) {
+          enemy.changeDirection();
+        }
+      }
+
+      for (var w = this.walls.length - 1; w >= 0; w--) {
+        var wall = this.walls[w];
+        if (enemy.mesh.intersectsMesh(wall, false)) {
+          enemy.changeDirection();
+        }
+      }
     }
 
     this.scene.render();

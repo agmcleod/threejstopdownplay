@@ -30,6 +30,8 @@ var Enemy = (function () {
       zVel = 0;
     }
 
+    this.name = "enemy";
+
     this.dir = new BABYLON.Vector3(
       xVel,
       0,
@@ -41,10 +43,8 @@ var Enemy = (function () {
   }
 
   Enemy.prototype.changeDirection = function () {
-    var xRand = !!~~(Math.random() * 2);
-    var zRand = !!~~(Math.random() * 2);
-    this.dir.x *= xRand ? 1 : -1;
-    this.dir.z *= zRand ? 1 : -1;
+    this.dir.x *= -1;
+    this.dir.z *= -1;
   }
 
   Enemy.prototype.update = function () {
