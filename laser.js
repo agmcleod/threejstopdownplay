@@ -24,5 +24,9 @@ var Laser = (function () {
     this.mesh.collisionsEnabled = true;
   }
 
+  Laser.prototype.update = function () {
+    this.mesh.moveWithCollisions(this.impulseVector);
+  }
+
   return Laser;
 })();

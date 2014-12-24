@@ -223,6 +223,10 @@ var GameScene = (function () {
       this.enemies[i].update(this.player);
     }
 
+    for (var i = this.lasers.length - 1; i >= 0; i--) {
+      this.lasers[i].update();
+    }
+
     this.scene.render();
   }
 
