@@ -194,7 +194,7 @@ var GameScene = (function () {
   }
 
   GameScene.prototype.removeEnemy = function(enemy) {
-    this.removeObject(enemy.mesh);
+    enemy.mesh.dispose()
     this.enemies.splice(this.enemies.indexOf(enemy), 1);
   }
 
@@ -204,12 +204,9 @@ var GameScene = (function () {
     window.removeEventListener("resize", this.resizeEvent.bind(this));
   }
 
-  GameScene.prototype.removeLaser = function(laserMesh) {
-    this.removeObject(laserMesh);
-  }
-
-  GameScene.prototype.removeObject = function(obj) {
-    this.scene.remove(obj);
+  GameScene.prototype.removeLaser = function(laser) {
+    laser.mesh.dispose();
+    this.lasers.splice(this.lasers.indexOf(laser), 1);
   }
 
   GameScene.prototype.render = function () {
@@ -220,7 +217,15 @@ var GameScene = (function () {
     this.player.update();
 
     for (var i = this.enemies.length - 1; i >= 0; i--) {
-      this.enemies[i].update(this.player);
+      var enemy = this.enemies[i];
+      enemy.update(this.player);
+      for (var l = this.lasers.length - 1; l >= 0; l--) {
+        var laser = this.lasers[l];
+        if (enemy.mesh.intersectsMesh(laser.mesh, false)) {
+          this.removeEnemy(enemy);
+          this.removeLaser(laser);
+        }
+      }
     }
 
     for (var i = this.lasers.length - 1; i >= 0; i--) {
