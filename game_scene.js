@@ -220,22 +220,7 @@ var GameScene = (function () {
     this.player.update();
 
     for (var i = this.enemies.length - 1; i >= 0; i--) {
-      var enemy = this.enemies[i];
-      enemy.update();
-
-      for (var c = this.cubes.length - 1; c >= 0; c--) {
-        var cube = this.cubes[c];
-        if (enemy.mesh.intersectsMesh(cube, false)) {
-          enemy.changeDirection();
-        }
-      }
-
-      for (var w = this.walls.length - 1; w >= 0; w--) {
-        var wall = this.walls[w];
-        if (enemy.mesh.intersectsMesh(wall, false)) {
-          enemy.changeDirection();
-        }
-      }
+      this.enemies[i].update(this.player);
     }
 
     this.scene.render();
