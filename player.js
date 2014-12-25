@@ -64,6 +64,13 @@ var Player = (function () {
         if (!scene.isMobile) {
           p1 = this.mesh.position;
         }
+        else {
+          var c2 = scene.mouseControls.moveOrigin;
+          var pickedPoint2 = window.scene.scene.pick(c2.x, c2.y);
+          if (pickedPoint2.hit) {
+            p1 = pickedPoint2.pickedPoint;
+          }
+        }
 
         if (!p1 || !p2) {
           return;
