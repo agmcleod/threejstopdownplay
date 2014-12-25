@@ -185,8 +185,13 @@ var GameScene = (function () {
     this.mouseControls = new MouseControls();
     this.mouseControls.bindTouch();
 
-    this.keyControls = new KeyControls();
-    this.keyControls.bindKey("SPACE");
+    if (!this.debugCam) {
+      this.keyControls = new KeyControls();
+      this.keyControls.bindKey("W");
+      this.keyControls.bindKey("D");
+      this.keyControls.bindKey("A");
+      this.keyControls.bindKey("S");
+    }
   }
 
   GameScene.prototype.dontRender = function () {

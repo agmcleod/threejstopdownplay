@@ -53,38 +53,56 @@ var Player = (function () {
       this.mesh.moveWithCollisions(this.velVector);
       this.mesh.position.y = 0.5;
     }
-    if (scene.mouseControls.isDown && !scene.debugCam) {
-      var coords = scene.mouseControls.touches[0];
-      var pickResult = window.scene.scene.pick(coords.x, coords.y);
-      var p1, p2;
-      if (pickResult.hit) {
-        p2 = pickResult.pickedPoint;
-      }
-      if (!scene.isMobile) {
-        p1 = this.mesh.position;
-      }
-      else {
-        var c2 = scene.mouseControls.moveOrigin;
-        var pickedPoint2 = window.scene.scene.pick(c2.x, c2.y);
-        if (pickedPoint2.hit) {
-          p1 = pickedPoint2.pickedPoint;
+    else {
+      if (scene.mouseControls.isDown) {
+        var coords = scene.mouseControls.touches[0];
+        var pickResult = window.scene.scene.pick(coords.x, coords.y);
+        var p1, p2;
+        if (pickResult.hit) {
+          p2 = pickResult.pickedPoint;
+        }
+        if (!scene.isMobile) {
+          p1 = this.mesh.position;
+        }
+
+        if (!p1 || !p2) {
+          return;
+        }
+
+        var angle = Math.atan2(p2.z - p1.z, p2.x - p1.x);
+        if (scene.isMobile) {
+          var velX = Math.cos(angle) / 4;
+          var velZ = Math.sin(angle) / 4;
+          this.velVector.copyFromFloats(velX, 0, velZ);
+          this.mesh.moveWithCollisions(this.velVector);
+          this.mesh.position.y = 0.5;
+        }
+
+        if ((scene.mouseControls.touches[1].down || !scene.isMobile) && Date.now() - this.lastLaserTime > 200) {
+          this.lastLaserTime = Date.now();
+          scene.addLaser(new Laser(this.parent, angle, Math.cos(angle), Math.sin(angle), this.mesh.position));
         }
       }
 
-      if (!p1 || !p2) {
-        return;
-      }
+      // check for key controls
+      if (!scene.isMobile) {
+        var xVel = 0, zVel = 0;
+        if (scene.keyControls.isPressed("W")) {
+          zVel += 0.25;
+        }
+        if (scene.keyControls.isPressed("S")) {
+          zVel -= 0.25;
+        }
+        if (scene.keyControls.isPressed("A")) {
+          xVel -= 0.25;
+        }
+        if (scene.keyControls.isPressed("D")) {
+          xVel += 0.25;
+        }
 
-      var angle = Math.atan2(p2.z - p1.z, p2.x - p1.x);
-      var velX = Math.cos(angle) / 4;
-      var velZ = Math.sin(angle) / 4;
-      this.velVector.copyFromFloats(velX, 0, velZ);
-      this.mesh.moveWithCollisions(this.velVector);
-      this.mesh.position.y = 0.5;
-
-      if ((scene.mouseControls.touches[1].down || scene.keyControls.isPressed("SPACE")) && Date.now() - this.lastLaserTime > 200) {
-        this.lastLaserTime = Date.now();
-        scene.addLaser(new Laser(this.parent, angle, Math.cos(angle), Math.sin(angle), this.mesh.position));
+        this.velVector.copyFromFloats(xVel, 0, zVel);
+        this.mesh.moveWithCollisions(this.velVector);
+        this.mesh.position.y = 0.5;
       }
     }
   }
