@@ -7,20 +7,20 @@ var Laser = (function () {
     var x = playerPos.x;
     var z = playerPos.z;
     if (velX >= 0) {
-      x += 1.5;
+      x += 1;
     }
     else {
-      x -= 1.5;
+      x -= 1;
     }
     if (velZ >= 0) {
-      z += 1.5;
+      z += 1;
     }
     else {
-      z -= 1.5;
+      z -= 1;
     }
     this.mesh.position.copyFromFloats(x, 1, z);
     this.mesh.rotation.y -= angle;
-    this.impulseVector = new BABYLON.Vector3(velX, 0, velZ);
+    this.impulseVector = new BABYLON.Vector3(velX / 2, 0, velZ / 2);
     this.mesh.collisionsEnabled = true;
   }
 
