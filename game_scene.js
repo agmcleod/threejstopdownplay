@@ -9,6 +9,7 @@ var GameScene = (function () {
     this.debugCam = window.location.hash.indexOf('debug') !== -1;
     this.scene = new BABYLON.Scene(engine);
     this.scene.collisionsEnabled = true;
+    this.scene.debugLayer.show();
     this.scene.clearColor = new BABYLON.Color3(0.8, 0.8, 0.8);
     this.engine = engine;
 
@@ -236,12 +237,6 @@ var GameScene = (function () {
     for (var i = this.lasers.length - 1; i >= 0; i--) {
       var laser = this.lasers[i];
       laser.update();
-      for (var w = this.walls.length - 1; w >= 0; w--) {
-        var wall = this.walls[w];
-        if (wall.intersectsMesh(laser, false)) {
-          this.removeLaser(laser);
-        }
-      }
     }
 
     this.scene.render();

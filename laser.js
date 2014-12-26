@@ -22,10 +22,14 @@ var Laser = (function () {
     this.mesh.rotation.y -= angle;
     this.impulseVector = new BABYLON.Vector3(velX / 2, 0, velZ / 2);
     this.mesh.collisionsEnabled = true;
+    this.time = Date.now();
   }
 
   Laser.prototype.update = function () {
     this.mesh.moveWithCollisions(this.impulseVector);
+    if (Date.now() - this.time > 2000) {
+      scene.removeLaser(this);
+    }
   }
 
   return Laser;
