@@ -134,7 +134,6 @@ var GameScene = (function () {
     plane.diffuseColor = new BABYLON.Color3(0, 0, 0);
     this.plane = plane;
     this.plane.checkCollisions = true;
-    this.plane.ellipsoid = new BABYLON.Vector3(0.5, 1, 0.5);
 
     this.player = new Player(this.scene);
     this.addLighting();

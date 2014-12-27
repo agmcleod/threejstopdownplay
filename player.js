@@ -31,8 +31,8 @@ var Player = (function () {
     else {
       this.velVector = new BABYLON.Vector3(0, 0, 0);
     }
-    this.mesh.ellipsoid = new BABYLON.Vector3(0.5, 1, 0.5);
-    this.mesh.ellipsoidOffset = new BABYLON.Vector3(0, 1.0, 0);
+    this.mesh.ellipsoid = new BABYLON.Vector3(0.5, 0.5, 0.5);
+    this.mesh.ellipsoidOffset = new BABYLON.Vector3(0, 1, 0);
     this.lastLaserTime = 0;
   }
 
