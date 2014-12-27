@@ -10,6 +10,7 @@ var GameScene = (function () {
     this.scene = new BABYLON.Scene(engine);
     this.scene.collisionsEnabled = true;
     this.scene.debugLayer.show();
+    this.scene.gravity = new BABYLON.Vector3(0, -9.81, 0);
     this.scene.clearColor = new BABYLON.Color3(0.8, 0.8, 0.8);
     this.engine = engine;
 
@@ -129,10 +130,11 @@ var GameScene = (function () {
       this.camera = new BABYLON.TargetCamera("FollowCam", new BABYLON.Vector3(0, 0, 0), this.scene);
     }
 
-    var plane = new BABYLON.Mesh.CreateGround("ground", 90, 90, 2, this.scene);
+    var plane = new BABYLON.Mesh.CreateGround("ground", 90, 90, 1, this.scene);
     plane.diffuseColor = new BABYLON.Color3(0, 0, 0);
     this.plane = plane;
     this.plane.checkCollisions = true;
+    this.plane.ellipsoid = new BABYLON.Vector3(0.5, 1, 0.5);
 
     this.player = new Player(this.scene);
     this.addLighting();
