@@ -1,7 +1,14 @@
 var GameScene = (function () {
 
   function getRandomCoordinate () {
-    return  -30 + Math.round(Math.random() * 60);
+    var coord = -30 + Math.round(Math.random() * 60);
+    if (coord < 0 && coord > -3) {
+      coord -= 3;
+    }
+    if (coord > 0 && coord < 3) {
+      coord += 3;
+    }
+    return coord;
   }
 
   function GameScene (engine, canvas) {
@@ -63,7 +70,7 @@ var GameScene = (function () {
       coords.x = getRandomCoordinate();
       coords.z = getRandomCoordinate();
       attempts++;
-      if (attempts > 10) {
+      if (attempts > 60) {
         return;
       }
     }
@@ -104,7 +111,7 @@ var GameScene = (function () {
 
       attempts++;
 
-      if (attempts > 10) {
+      if (attempts > 60) {
         return;
       }
     }
@@ -238,6 +245,12 @@ var GameScene = (function () {
     for (var i = this.lasers.length - 1; i >= 0; i--) {
       var laser = this.lasers[i];
       laser.update();
+      for (var c = this.cubes.length - 1; c >= 0; c--) {
+        var cube = this.cubes[c];
+        if (cube.intersectsMesh(laser.mesh, false)) {
+          this.removeLaser(laser);
+        }
+      }
     }
 
     this.scene.render();
