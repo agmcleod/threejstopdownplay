@@ -204,10 +204,6 @@ var GameScene = (function () {
     }
   }
 
-  GameScene.prototype.dontRender = function () {
-    this.dontRender = true;
-  }
-
   GameScene.prototype.removeEnemy = function(enemy) {
     enemy.mesh.dispose()
     this.enemies.splice(this.enemies.indexOf(enemy), 1);
@@ -225,15 +221,13 @@ var GameScene = (function () {
   }
 
   GameScene.prototype.render = function () {
-    if (this.dontRender === true) {
-      return false;
-    }
+    var endScene = false;
 
     this.player.update();
 
     for (var i = this.enemies.length - 1; i >= 0; i--) {
       var enemy = this.enemies[i];
-      enemy.update(this.player);
+      endScene |= enemy.update(this.player);
       for (var l = this.lasers.length - 1; l >= 0; l--) {
         var laser = this.lasers[l];
         if (enemy.mesh.intersectsMesh(laser.mesh, false)) {
@@ -254,6 +248,10 @@ var GameScene = (function () {
       }
     }
     this.scene.render();
+    if (endScene) {
+      this.removeEvents();
+      this.showEndScreen();
+    }
   }
 
   GameScene.prototype.resizeEvent = function () {
@@ -263,7 +261,9 @@ var GameScene = (function () {
   }
 
   GameScene.prototype.showEndScreen = function () {
-    this.dontRender();
+    this.engine.stopRenderLoop();
+    var canvas = document.getElementById("screen");
+    document.body.removeChild(canvas);
     var loss = new ImageScreen("retry");
     this.player.mesh.dispose();
     this.player = null;
@@ -284,10 +284,17 @@ var GameScene = (function () {
     for (var i = this.walls.length - 1; i >= 0; i--) {
       this.walls[i].dispose();
     }
-
     loss.stageImage(function () {
-      window.scene = new GameScene();
-      requestAnimationFrame(scene.render.bind(scene));
+      canvas = document.createElement("canvas");
+      canvas.id = 'screen';
+      document.body.appendChild(canvas);
+      canvas.style.width = (window.innerWidth) + 'px';
+      canvas.style.height = (window.innerHeight) + 'px';
+      var engine = new BABYLON.Engine(canvas, true);
+      window.scene = new GameScene(engine, canvas);
+      engine.runRenderLoop(function () {
+        window.scene.render();
+      });
     });
   }
 

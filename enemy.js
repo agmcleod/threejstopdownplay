@@ -23,8 +23,13 @@ var Enemy = (function () {
     var angle = Math.atan2(playerPos.z - pos.z, playerPos.x - pos.x);
     this.dir.x = Math.cos(angle) / 8;
     this.dir.z = Math.sin(angle) / 8;
+    var value;
+    if (this.mesh.intersectsMesh(player.mesh, false)) {
+      value = player.takeHit();
+    }
     this.mesh.moveWithCollisions(this.dir);
     this.mesh.position.y = 0.5;
+    return value;
   }
 
   return Enemy;

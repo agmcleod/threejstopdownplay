@@ -34,17 +34,21 @@ var Player = (function () {
     this.mesh.ellipsoid = new BABYLON.Vector3(0.5, 0.5, 0.5);
     this.mesh.ellipsoidOffset = new BABYLON.Vector3(0, 1, 0);
     this.lastLaserTime = 0;
+    this.damageTime = 0;
   }
 
   Player.prototype.takeHit = function () {
     if (this.health > 0) {
-      this.health--;
-      this.mesh.material.diffuseColor.r = this.colours[this.health][0];
-      this.mesh.material.diffuseColor.g = this.colours[this.health][1];
+      if (Date.now() - this.damageTime > 500) {
+        this.damageTime = Date.now();
+        this.health--;
+        this.mesh.material.emissiveColor.r = this.colours[this.health][0];
+        this.mesh.material.emissiveColor.g = this.colours[this.health][1];
+      }
+      return false;
     }
     else {
-      scene.removeEvents();
-      scene.showEndScreen();
+      return true;
     }
   }
 
