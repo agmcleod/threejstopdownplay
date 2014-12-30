@@ -47,6 +47,7 @@ var GameScene = (function () {
       BlackBerry ||
       Kindle ||
       iOS || false;
+    this.time = Date.now();
   }
 
   GameScene.prototype.addCube = function (cubes, cubeTrackArray) {
@@ -252,7 +253,6 @@ var GameScene = (function () {
         }
       }
     }
-
     this.scene.render();
   }
 
