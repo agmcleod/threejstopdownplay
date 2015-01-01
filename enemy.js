@@ -24,10 +24,10 @@ var Enemy = (function () {
     this.dir.x = Math.cos(angle) / 8;
     this.dir.z = Math.sin(angle) / 8;
     var value;
-    if (this.mesh.intersectsMesh(player.mesh, false)) {
+    this.mesh.moveWithCollisions(this.dir);
+    if (this.mesh.intersectsMesh(player.collisionBounds, false)) {
       value = player.takeHit();
     }
-    this.mesh.moveWithCollisions(this.dir);
     this.mesh.position.y = 0.5;
     return value;
   }

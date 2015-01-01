@@ -33,6 +33,11 @@ var Player = (function () {
     }
     this.mesh.ellipsoid = new BABYLON.Vector3(0.5, 0.5, 0.5);
     this.mesh.ellipsoidOffset = new BABYLON.Vector3(0, 1, 0);
+    this.collisionBounds = new BABYLON.Mesh.CreateBox("playerCollision", 1.1, parent);
+    var colMat = new BABYLON.StandardMaterial("collisionMat", parent);
+    colMat.alpha = 0;
+    this.collisionBounds.material = colMat;
+    this.collisionBounds.parent = this.mesh;
     this.lastLaserTime = 0;
     this.damageTime = 0;
   }
