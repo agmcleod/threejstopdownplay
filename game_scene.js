@@ -246,6 +246,13 @@ var GameScene = (function () {
           this.removeLaser(laser);
         }
       }
+
+      for (var w = this.walls.length - 1; w >= 0; w--) {
+        var wall = this.walls[w];
+        if (wall.intersectsMesh(laser.mesh, false)) {
+          this.removeLaser(laser);
+        }
+      }
     }
     this.scene.render();
     if (endScene) {
