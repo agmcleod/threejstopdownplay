@@ -95,6 +95,7 @@
 
   function MouseControls () {
     this.moveOrigin = { x: null, y: null };
+    this.laserOrigin = { x: null, y: null };
     this.isDown = false;
     this.touches = [{x:0,y:0,down: false}, {down: false}];
     _this = this;
@@ -112,6 +113,8 @@
       }
 
       if (res.rightTouch) {
+        _this.laserOrigin.x = res.rightTouch.clientX;
+        _this.laserOrigin.y = res.rightTouch.clientY;
         _this.touches[1].down = true;
       }
     }

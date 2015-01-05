@@ -96,7 +96,19 @@ var Player = (function () {
 
         if ((scene.mouseControls.touches[1].down || !scene.isMobile) && Date.now() - this.lastLaserTime > 200) {
           this.lastLaserTime = Date.now();
-          scene.addLaser(new Laser(this.parent, angle, Math.cos(angle), Math.sin(angle), this.mesh.position));
+          var laserAngle;
+          if (scene.mouseControls.touches[1].down) {
+            var laserOrigin = scene.mouseControls.laserOrigin;
+            var laserTarget = scene.mouseControls.touches[1];
+            var laserOriginPoint = window.scene.scene.pick(laserOrigin.x, laserOrigin.y);
+            var laserTargetPoint = window.scene.scene.pick(laserTarget.x, laserTarget.y);
+
+            laserAngle = Math.atan2(laserTargetPoint.z - laserOriginPoint.z, laserTargetPoint.x - laserOriginPoint.x);
+          }
+          else {
+            laserAngle = angle;
+          }
+          scene.addLaser(new Laser(this.parent, laserAngle, Math.cos(laserAngle), Math.sin(laserAngle), this.mesh.position));
         }
       }
 
