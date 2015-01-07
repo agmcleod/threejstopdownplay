@@ -111,11 +111,15 @@
         _this.moveOrigin.x = res.leftTouch.clientX;
         _this.moveOrigin.y = res.leftTouch.clientY;
         _this.touches[0].down = true;
+        _this.touches[0].x = res.leftTouch.clientX;
+        _this.touches[0].y = res.leftTouch.clientY;
       }
 
       if (res.rightTouch) {
         _this.laserOrigin.x = res.rightTouch.clientX;
         _this.laserOrigin.y = res.rightTouch.clientY;
+        _this.touches[1].x = res.rightTouch.clientX;
+        _this.touches[1].y = res.rightTouch.clientY;
         _this.touches[1].down = true;
       }
     }
@@ -160,9 +164,10 @@
   }
 
   MouseControls.prototype.bindTouch = function () {
-    window.addEventListener(activeEventList[POINTER_DOWN], downEvent);
-    window.addEventListener(activeEventList[POINTER_MOVE], moveEvent);
-    window.addEventListener(activeEventList[POINTER_UP], upEvent);
+    var canvas = document.getElementById('screen');
+    canvas.addEventListener(activeEventList[POINTER_DOWN], downEvent);
+    canvas.addEventListener(activeEventList[POINTER_MOVE], moveEvent);
+    canvas.addEventListener(activeEventList[POINTER_UP], upEvent);
   }
 
   MouseControls.prototype.mouseDown = function () {
@@ -170,9 +175,10 @@
   }
 
   MouseControls.prototype.unbind = function () {
-    window.removeEventListener(activeEventList[POINTER_DOWN], downEvent);
-    window.removeEventListener(activeEventList[POINTER_MOVE], moveEvent);
-    window.removeEventListener(activeEventList[POINTER_UP], upEvent);
+    var canvas = document.getElementById('screen');
+    canvas.removeEventListener(activeEventList[POINTER_DOWN], downEvent);
+    canvas.removeEventListener(activeEventList[POINTER_MOVE], moveEvent);
+    canvas.removeEventListener(activeEventList[POINTER_UP], upEvent);
   }
 
   window.MouseControls = MouseControls;

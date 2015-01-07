@@ -80,13 +80,19 @@ var Player = (function () {
         return;
       }
 
-      var angle = Math.atan2(p2.z - p1.z, p2.x - p1.x);
-      if (scene.isMobile) {
-        var velX = Math.cos(angle) / 4;
-        var velZ = Math.sin(angle) / 4;
-        this.velVector.copyFromFloats(velX, 0, velZ);
-        this.mesh.moveWithCollisions(this.velVector);
-        this.mesh.position.y = 0.5;
+      var angle;
+      if (scene.isMobile && scene.mouseControls.touches[0].down) {
+        angle = Math.atan2(p2.z - p1.z, p2.x - p1.x);
+        if (!isNaN(angle)) {
+          var velX = Math.cos(angle) / 4;
+          var velZ = Math.sin(angle) / 4;
+          this.velVector.copyFromFloats(velX, 0, velZ);
+          this.mesh.moveWithCollisions(this.velVector);
+          this.mesh.position.y = 0.5;
+        }
+      }
+      else {
+        angle = Math.atan2(p2.z - p1.z, p2.x - p1.x);
       }
 
       if ((scene.mouseControls.touches[1].down || !scene.isMobile) && Date.now() - this.lastLaserTime > 200) {
