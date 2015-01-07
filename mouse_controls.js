@@ -98,7 +98,7 @@
     this.moveOrigin = { x: null, y: null };
     this.laserOrigin = { x: null, y: null };
     this.isDown = false;
-    this.touches = [{x:0,y:0,down: false}, {down: false}];
+    this.touches = [{x:0,y:0,down: false, moving: false}, {down: false}];
     _this = this;
   }
 
@@ -113,6 +113,7 @@
         _this.touches[0].down = true;
         _this.touches[0].x = res.leftTouch.clientX;
         _this.touches[0].y = res.leftTouch.clientY;
+        _this.touches[0].moving = false;
       }
 
       if (res.rightTouch) {
@@ -131,6 +132,7 @@
       if (res.leftTouch) {
         _this.touches[0].x = res.leftTouch.clientX;
         _this.touches[0].y = res.leftTouch.clientY;
+        _this.touches[0].moving = true;
       }
       if (res.rightTouch) {
         _this.touches[1].x = res.rightTouch.clientX;

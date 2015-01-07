@@ -81,15 +81,13 @@ var Player = (function () {
       }
 
       var angle;
-      if (scene.isMobile && scene.mouseControls.touches[0].down) {
+      if (scene.isMobile && scene.mouseControls.touches[0].moving) {
         angle = Math.atan2(p2.z - p1.z, p2.x - p1.x);
-        if (!isNaN(angle)) {
-          var velX = Math.cos(angle) / 4;
-          var velZ = Math.sin(angle) / 4;
-          this.velVector.copyFromFloats(velX, 0, velZ);
-          this.mesh.moveWithCollisions(this.velVector);
-          this.mesh.position.y = 0.5;
-        }
+        var velX = Math.cos(angle) / 4;
+        var velZ = Math.sin(angle) / 4;
+        this.velVector.copyFromFloats(velX, 0, velZ);
+        this.mesh.moveWithCollisions(this.velVector);
+        this.mesh.position.y = 0.5;
       }
       else {
         angle = Math.atan2(p2.z - p1.z, p2.x - p1.x);
