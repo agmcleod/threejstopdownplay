@@ -151,6 +151,7 @@
       _this.isDown = false;
       _this.touches[0].down = false;
       _this.touches[1].down = false;
+      _this.touches[0].moving = false;
     }
 
     if (e.touches) {
@@ -158,6 +159,7 @@
       var res = resolveTouchesToIntent(e.touches);
       if (!res.leftTouch) {
         _this.touches[0].down = false;
+        _this.touches[0].moving = false;
       }
       if (!res.rightTouch) {
         _this.touches[1].down = false;

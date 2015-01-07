@@ -96,6 +96,7 @@ var Player = (function () {
       if ((scene.mouseControls.touches[1].down || !scene.isMobile) && Date.now() - this.lastLaserTime > 200) {
         this.lastLaserTime = Date.now();
         var laserAngle;
+        // for touch controls, use right touch to calculate trajectory
         if (scene.mouseControls.touches[1].down) {
           var laserOrigin = scene.mouseControls.laserOrigin;
           var laserTarget = scene.mouseControls.touches[1];
