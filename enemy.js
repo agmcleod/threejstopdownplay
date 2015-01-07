@@ -18,18 +18,18 @@ var Enemy = (function () {
   }
 
   Enemy.prototype.update = function (player) {
-    var playerPos = player.mesh.position;
-    var pos = this.mesh.position;
-    var angle = Math.atan2(playerPos.z - pos.z, playerPos.x - pos.x);
-    this.dir.x = Math.cos(angle) / 8;
-    this.dir.z = Math.sin(angle) / 8;
-    var value;
-    this.mesh.moveWithCollisions(this.dir);
-    if (this.mesh.intersectsMesh(player.collisionBounds, false)) {
-      value = player.takeHit();
-    }
-    this.mesh.position.y = 0.5;
-    return value;
+    // var playerPos = player.mesh.position;
+    // var pos = this.mesh.position;
+    // var angle = Math.atan2(playerPos.z - pos.z, playerPos.x - pos.x);
+    // this.dir.x = Math.cos(angle) / 8;
+    // this.dir.z = Math.sin(angle) / 8;
+    // var value;
+    // this.mesh.moveWithCollisions(this.dir);
+    // if (this.mesh.intersectsMesh(player.collisionBounds, false)) {
+    //   value = player.takeHit();
+    // }
+    // this.mesh.position.y = 0.5;
+    // return value;
   }
 
   return Enemy;

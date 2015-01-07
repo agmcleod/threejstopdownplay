@@ -45,9 +45,10 @@
 
   var _this;
 
-  function resolveTouchesToIntent (touches, leftTouch, rightTouch) {
+  function resolveTouchesToIntent (touches) {
     var t1 = touches[0];
     var t2 = touches[1];
+    var leftTouch, rightTouch;
     if (t1 && t2) {
       if (t1.clientX < window.innerWidth / 2) {
         leftTouch = t1;
@@ -106,7 +107,7 @@
     _this.isDown = true;
     if (e.touches) {
       var res = resolveTouchesToIntent(e.touches);
-      if (res.leftTouch && e.touches.length === 1) {
+      if (res.leftTouch) {
         _this.moveOrigin.x = res.leftTouch.clientX;
         _this.moveOrigin.y = res.leftTouch.clientY;
         _this.touches[0].down = true;
@@ -126,6 +127,10 @@
       if (res.leftTouch) {
         _this.touches[0].x = res.leftTouch.clientX;
         _this.touches[0].y = res.leftTouch.clientY;
+      }
+      if (res.rightTouch) {
+        _this.touches[1].x = res.rightTouch.clientX;
+        _this.touches[1].y = res.rightTouch.clientY;
       }
     }
     else {

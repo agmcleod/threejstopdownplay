@@ -13,10 +13,11 @@ var GameScene = (function () {
 
   function GameScene (engine, canvas) {
     this.canvas = canvas;
-    this.debugCam = window.location.hash.indexOf('debug') !== -1;
     this.scene = new BABYLON.Scene(engine);
     this.scene.collisionsEnabled = true;
-    this.scene.debugLayer.show();
+    if (window.location.hash.indexOf('debug') !== -1) {
+      this.scene.debugLayer.show();
+    }
     this.scene.gravity = new BABYLON.Vector3(0, -9.81, 0);
     this.scene.clearColor = new BABYLON.Color3(0.8, 0.8, 0.8);
     this.engine = engine;
@@ -130,13 +131,7 @@ var GameScene = (function () {
   }
 
   GameScene.prototype.addObjects = function () {
-    if (this.debugCam) {
-      this.camera = new BABYLON.FreeCamera("FreeCamera", new BABYLON.Vector3(0, 1, -7), this.scene);
-      this.camera.attachControl(this.canvas);
-    }
-    else {
-      this.camera = new BABYLON.TargetCamera("FollowCam", new BABYLON.Vector3(0, 0, 0), this.scene);
-    }
+    this.camera = new BABYLON.TargetCamera("FollowCam", new BABYLON.Vector3(0, 0, 0), this.scene);
 
     var plane = new BABYLON.Mesh.CreateGround("ground", 90, 90, 1, this.scene);
     plane.diffuseColor = new BABYLON.Color3(0, 0, 0);
@@ -145,11 +140,9 @@ var GameScene = (function () {
 
     this.player = new Player(this.scene);
     this.addLighting();
-    if (!this.debugCam) {
-      this.camera.parent = this.player.mesh;
-      this.camera.position.y = 20;
-      this.camera.cameraRotation.x = (Math.PI / 4);
-    }
+    this.camera.parent = this.player.mesh;
+    this.camera.position.y = 20;
+    this.camera.cameraRotation.x = (Math.PI / 4);
 
     this.scene.activeCamera = this.camera;
 
@@ -195,13 +188,11 @@ var GameScene = (function () {
     this.mouseControls = new MouseControls();
     this.mouseControls.bindTouch();
 
-    if (!this.debugCam) {
-      this.keyControls = new KeyControls();
-      this.keyControls.bindKey("W");
-      this.keyControls.bindKey("D");
-      this.keyControls.bindKey("A");
-      this.keyControls.bindKey("S");
-    }
+    this.keyControls = new KeyControls();
+    this.keyControls.bindKey("W");
+    this.keyControls.bindKey("D");
+    this.keyControls.bindKey("A");
+    this.keyControls.bindKey("S");
   }
 
   GameScene.prototype.removeEnemy = function(enemy) {
