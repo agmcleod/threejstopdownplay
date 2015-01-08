@@ -84,9 +84,10 @@ var Player = (function () {
       var angle;
       if (scene.isMobile && scene.mouseControls.touches[0].moving) {
         angle = Math.atan2(p2.z - p1.z, p2.x - p1.x);
-        var velX = Math.cos(angle) / 12;
-        var velZ = Math.sin(angle) / 12;
+        var velX = Math.cos(angle) / 40;
+        var velZ = Math.sin(angle) / 40;
         this.velVector.copyFromFloats(velX * delta, 0, velZ * delta);
+        console.log(velX, velZ, delta);
         this.mesh.moveWithCollisions(this.velVector);
         this.mesh.position.y = 0.5;
       }
