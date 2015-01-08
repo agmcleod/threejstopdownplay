@@ -20,9 +20,10 @@ var Enemy = (function () {
   Enemy.prototype.update = function (player) {
     var playerPos = player.mesh.position;
     var pos = this.mesh.position;
+    var delta = BABYLON.Tools.GetDeltaTime();
     var angle = Math.atan2(playerPos.z - pos.z, playerPos.x - pos.x);
-    this.dir.x = Math.cos(angle) / 8;
-    this.dir.z = Math.sin(angle) / 8;
+    this.dir.x = Math.cos(angle) / 100 * delta;
+    this.dir.z = Math.sin(angle) / 100 * delta;
     var value;
     this.mesh.moveWithCollisions(this.dir);
     if (this.mesh.intersectsMesh(player.collisionBounds, false)) {

@@ -8,15 +8,16 @@ var Laser = (function () {
     var z = playerPos.z + velZ;
     this.mesh.position.copyFromFloats(x, 1, z);
     this.mesh.rotation.y -= angle;
-    this.impulseVector = new BABYLON.Vector3(velX / 2, 0, velZ / 2);
+    this.impulseVector = new BABYLON.Vector3(velX / 22, 0, velZ / 22);
     this.mesh.collisionsEnabled = true;
     this.mesh.ellipsoid = new BABYLON.Vector3(0.5, 0.5, 0.5);
     this.time = Date.now();
   }
 
   Laser.prototype.update = function () {
-    this.mesh.position.x += this.impulseVector.x;
-    this.mesh.position.z += this.impulseVector.z;
+    var delta = BABYLON.Tools.GetDeltaTime();
+    this.mesh.position.x += this.impulseVector.x * delta;
+    this.mesh.position.z += this.impulseVector.z * delta;
     if (Date.now() - this.time > 2000) {
       scene.removeLaser(this);
     }

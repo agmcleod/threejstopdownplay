@@ -49,6 +49,8 @@ var GameScene = (function () {
       Kindle ||
       iOS || false;
     this.time = Date.now();
+    this.countdown = true;
+    this.startCountdown();
   }
 
   GameScene.prototype.addCube = function (cubes, cubeTrackArray) {
@@ -134,7 +136,6 @@ var GameScene = (function () {
     this.camera = new BABYLON.TargetCamera("FollowCam", new BABYLON.Vector3(0, 0, 0), this.scene);
 
     var plane = new BABYLON.Mesh.CreateGround("ground", 90, 90, 1, this.scene);
-    plane.diffuseColor = new BABYLON.Color3(0, 0, 0);
     this.plane = plane;
     this.plane.checkCollisions = true;
 
@@ -213,37 +214,19 @@ var GameScene = (function () {
 
   GameScene.prototype.render = function () {
     var endScene = false;
-
-    this.player.update();
-
-    for (var i = this.enemies.length - 1; i >= 0; i--) {
-      var enemy = this.enemies[i];
-      endScene |= enemy.update(this.player);
-      for (var l = this.lasers.length - 1; l >= 0; l--) {
-        var laser = this.lasers[l];
-        if (enemy.mesh.intersectsMesh(laser.mesh, false)) {
-          this.removeEnemy(enemy);
-          this.removeLaser(laser);
-        }
+    if (this.countdown) {
+      var diff = Date.now() - this.startCountdownTime;
+      if ((diff >= 1000 && this.currentCountDown === 3) || (diff >= 2000 && this.currentCountDown === 2)) {
+        this.currentCountDown--;
+        this.plane.material.diffuseTexture.drawText(this.currentCountDown, null, 540, "bold 100px Helvetica", "white", "#555555");
+      }
+      else if (diff >= 3000 && this.currentCountDown === 1) {
+        this.countdown = false;
+        this.plane.material.diffuseTexture.drawText("", null, 540, "bold 100px Helvetica", "white", "#555555");
       }
     }
-
-    for (var i = this.lasers.length - 1; i >= 0; i--) {
-      var laser = this.lasers[i];
-      laser.update();
-      for (var c = this.cubes.length - 1; c >= 0; c--) {
-        var cube = this.cubes[c];
-        if (cube.intersectsMesh(laser.mesh, false)) {
-          this.removeLaser(laser);
-        }
-      }
-
-      for (var w = this.walls.length - 1; w >= 0; w--) {
-        var wall = this.walls[w];
-        if (wall.intersectsMesh(laser.mesh, false)) {
-          this.removeLaser(laser);
-        }
-      }
+    else {
+      endScene = this.update(endScene);
     }
     this.scene.render();
     if (endScene) {
@@ -294,6 +277,54 @@ var GameScene = (function () {
         window.scene.render();
       });
     });
+  }
+
+  GameScene.prototype.startCountdown = function () {
+    var countdownTexture = new BABYLON.DynamicTexture("dynamic texture", 1024, this.scene, true);
+    this.plane.material = new BABYLON.StandardMaterial("plane", this.scene);
+    this.plane.material.diffuseTexture = countdownTexture;
+    this.plane.material.specularColor = new BABYLON.Color3(0.1, 0.1, 0.1);
+    this.plane.material.backFaceCulling = false;
+    this.startCountdownTime = Date.now();
+    this.currentCountDown = 3;
+
+    countdownTexture.drawText(this.currentCountDown, null, 540, "bold 100px Helvetica", "white", "#555555");
+  }
+
+  GameScene.prototype.update = function (endScene) {
+    this.player.update();
+
+    for (var i = this.enemies.length - 1; i >= 0; i--) {
+      var enemy = this.enemies[i];
+      endScene |= enemy.update(this.player);
+      for (var l = this.lasers.length - 1; l >= 0; l--) {
+        var laser = this.lasers[l];
+        if (enemy.mesh.intersectsMesh(laser.mesh, false)) {
+          this.removeEnemy(enemy);
+          this.removeLaser(laser);
+        }
+      }
+    }
+
+    for (var i = this.lasers.length - 1; i >= 0; i--) {
+      var laser = this.lasers[i];
+      laser.update();
+      for (var c = this.cubes.length - 1; c >= 0; c--) {
+        var cube = this.cubes[c];
+        if (cube.intersectsMesh(laser.mesh, false)) {
+          this.removeLaser(laser);
+        }
+      }
+
+      for (var w = this.walls.length - 1; w >= 0; w--) {
+        var wall = this.walls[w];
+        if (wall.intersectsMesh(laser.mesh, false)) {
+          this.removeLaser(laser);
+        }
+      }
+    }
+
+    return endScene;
   }
 
   return GameScene;

@@ -58,6 +58,7 @@ var Player = (function () {
   }
 
   Player.prototype.update = function () {
+    var delta = BABYLON.Tools.GetDeltaTime();
     if (scene.mouseControls.isDown) {
       var coords = scene.mouseControls.touches[0];
       var pickResult = window.scene.scene.pick(coords.x, coords.y);
@@ -83,9 +84,9 @@ var Player = (function () {
       var angle;
       if (scene.isMobile && scene.mouseControls.touches[0].moving) {
         angle = Math.atan2(p2.z - p1.z, p2.x - p1.x);
-        var velX = Math.cos(angle) / 4;
-        var velZ = Math.sin(angle) / 4;
-        this.velVector.copyFromFloats(velX, 0, velZ);
+        var velX = Math.cos(angle) / 12;
+        var velZ = Math.sin(angle) / 12;
+        this.velVector.copyFromFloats(velX * delta, 0, velZ * delta);
         this.mesh.moveWithCollisions(this.velVector);
         this.mesh.position.y = 0.5;
       }
@@ -118,19 +119,19 @@ var Player = (function () {
     if (!scene.isMobile) {
       var xVel = 0, zVel = 0;
       if (scene.keyControls.isPressed("W")) {
-        zVel += 0.25;
+        zVel += 0.02;
       }
       if (scene.keyControls.isPressed("S")) {
-        zVel -= 0.25;
+        zVel -= 0.02;
       }
       if (scene.keyControls.isPressed("A")) {
-        xVel -= 0.25;
+        xVel -= 0.02;
       }
       if (scene.keyControls.isPressed("D")) {
-        xVel += 0.25;
+        xVel += 0.02;
       }
 
-      this.velVector.copyFromFloats(xVel, 0, zVel);
+      this.velVector.copyFromFloats(xVel * delta, 0, zVel * delta);
       this.mesh.moveWithCollisions(this.velVector);
       this.mesh.position.y = 0.5;
     }
