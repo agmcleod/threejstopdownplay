@@ -84,10 +84,9 @@ var Player = (function () {
       var angle;
       if (scene.isMobile && scene.mouseControls.touches[0].moving) {
         angle = Math.atan2(p2.z - p1.z, p2.x - p1.x);
-        var velX = Math.cos(angle) / 40;
-        var velZ = Math.sin(angle) / 40;
+        var velX = Math.cos(angle) / 70;
+        var velZ = Math.sin(angle) / 70;
         this.velVector.copyFromFloats(velX * delta, 0, velZ * delta);
-        console.log(velX, velZ, delta);
         this.mesh.moveWithCollisions(this.velVector);
         this.mesh.position.y = 0.5;
       }
@@ -98,16 +97,18 @@ var Player = (function () {
       if ((scene.mouseControls.touches[1].down || !scene.isMobile) && Date.now() - this.lastLaserTime > 200) {
         this.lastLaserTime = Date.now();
         var laserAngle;
-        // for touch controls, use right touch to calculate trajectory
+        // for touch controls, target closest enemy
         if (scene.mouseControls.touches[1].down) {
-          var laserOrigin = scene.mouseControls.laserOrigin;
-          var laserTarget = scene.mouseControls.touches[1];
-          var laserOriginPoint = window.scene.scene.pick(laserOrigin.x, laserOrigin.y);
-          var laserTargetPoint = window.scene.scene.pick(laserTarget.x, laserTarget.y);
-
-          if (laserOriginPoint.hit && laserTargetPoint.hit) {
-            laserAngle = Math.atan2(laserTargetPoint.pickedPoint.z - laserOriginPoint.pickedPoint.z, laserTargetPoint.pickedPoint.x - laserOriginPoint.pickedPoint.x);
+          var targetPos = new BABYLON.Vector3(Infinity, 0, Infinity);
+          var playerPos = this.mesh.position;
+          for (var i = scene.enemies.length - 1; i >= 0; i--) {
+            var enemyPos = scene.enemies[i].mesh.position;
+            if (Math.abs(enemyPos.x) - Math.abs(playerPos.x) <= Math.abs(targetPos.x) - Math.abs(playerPos.x) || Math.abs(enemyPos.z) - Math.abs(playerPos.z) <= Math.abs(targetPos.z) - Math.abs(playerPos.z)) {
+              targetPos.x = enemyPos.x;
+              targetPos.z = enemyPos.z;
+            }
           }
+          laserAngle = Math.atan2(targetPos.z - playerPos.z, targetPos.x - playerPos.x);
         }
         else {
           laserAngle = angle;
@@ -120,16 +121,16 @@ var Player = (function () {
     if (!scene.isMobile) {
       var xVel = 0, zVel = 0;
       if (scene.keyControls.isPressed("W")) {
-        zVel += 0.02;
+        zVel += 0.01;
       }
       if (scene.keyControls.isPressed("S")) {
-        zVel -= 0.02;
+        zVel -= 0.01;
       }
       if (scene.keyControls.isPressed("A")) {
-        xVel -= 0.02;
+        xVel -= 0.01;
       }
       if (scene.keyControls.isPressed("D")) {
-        xVel += 0.02;
+        xVel += 0.01;
       }
 
       this.velVector.copyFromFloats(xVel * delta, 0, zVel * delta);
