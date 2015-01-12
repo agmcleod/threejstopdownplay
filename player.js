@@ -103,7 +103,7 @@ var Player = (function () {
           var playerPos = this.mesh.position;
           for (var i = scene.enemies.length - 1; i >= 0; i--) {
             var enemyPos = scene.enemies[i].mesh.position;
-            if (Math.abs(enemyPos.x) - Math.abs(playerPos.x) <= Math.abs(targetPos.x) - Math.abs(playerPos.x) || Math.abs(enemyPos.z) - Math.abs(playerPos.z) <= Math.abs(targetPos.z) - Math.abs(playerPos.z)) {
+            if (Math.abs(enemyPos.x) - Math.abs(playerPos.x) <= Math.abs(targetPos.x) - Math.abs(playerPos.x) && Math.abs(enemyPos.z) - Math.abs(playerPos.z) <= Math.abs(targetPos.z) - Math.abs(playerPos.z)) {
               targetPos.x = enemyPos.x;
               targetPos.z = enemyPos.z;
             }
