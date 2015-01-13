@@ -91,37 +91,6 @@ var GameScene = (function () {
     cubes.push(cube);
   }
 
-  GameScene.prototype.addEnemy = function (cubeTrackArray) {
-    var attempts = 0;
-
-    var validCoords = false;
-
-    var x, z;
-
-    while (!validCoords) {
-      var validCoords = true;
-
-      x = getRandomCoordinate();
-      z = getRandomCoordinate();
-
-      for (var i = cubeTrackArray.length - 1; i >= 0; i--) {
-        var otherCube = cubeTrackArray[i];
-        var diff = (1 + otherCube.size * 0.2);
-        if (Math.abs(x - otherCube.x) < diff || Math.abs(z - otherCube.z) < diff) {
-          validCoords = false;
-          break;
-        }
-      }
-
-      attempts++;
-
-      if (attempts > 60) {
-        return;
-      }
-    }
-    this.enemies.push(new Enemy(this, x, z));
-  }
-
   GameScene.prototype.addLaser = function (laser) {
     this.lasers.push(laser);
   }
@@ -147,16 +116,13 @@ var GameScene = (function () {
 
     this.scene.activeCamera = this.camera;
 
-    var cubeTrackArray = [];
+    this.cubeTrackArray = [];
     this.cubes = [];
     for (var i = 0; i < 35; i++) {
-      this.addCube(this.cubes, cubeTrackArray);
+      this.addCube(this.cubes, this.cubeTrackArray);
     }
 
-    for (var i = 0; i < 20; i++) {
-      this.addEnemy(cubeTrackArray);
-    }
-
+    this.createWave(20);
     this.addWalls();
   }
 
@@ -196,9 +162,8 @@ var GameScene = (function () {
     this.keyControls.bindKey("S");
   }
 
-  GameScene.prototype.removeEnemy = function(enemy) {
-    enemy.mesh.dispose()
-    this.enemies.splice(this.enemies.indexOf(enemy), 1);
+  GameScene.prototype.createWave = function (count) {
+    this.wave = new Wave(this, count, this.cubeTrackArray);
   }
 
   GameScene.prototype.removeEvents = function () {
@@ -294,13 +259,15 @@ var GameScene = (function () {
   GameScene.prototype.update = function (endScene) {
     this.player.update();
 
-    for (var i = this.enemies.length - 1; i >= 0; i--) {
-      var enemy = this.enemies[i];
+    var enemies = this.wave.enemies;
+
+    for (var i = enemies.length - 1; i >= 0; i--) {
+      var enemy = enemies[i];
       endScene |= enemy.update(this.player);
       for (var l = this.lasers.length - 1; l >= 0; l--) {
         var laser = this.lasers[l];
         if (enemy.mesh.intersectsMesh(laser.mesh, false)) {
-          this.removeEnemy(enemy);
+          this.wave.removeEnemy(enemy);
           this.removeLaser(laser);
         }
       }
@@ -326,6 +293,8 @@ var GameScene = (function () {
 
     return endScene;
   }
+
+  GameScene.getRandomCoordinate = getRandomCoordinate;
 
   return GameScene;
 })();

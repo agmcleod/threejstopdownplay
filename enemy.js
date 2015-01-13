@@ -1,7 +1,7 @@
 var Enemy = (function () {
-  function Enemy (gameScene, x, z) {
-    this.mesh = BABYLON.Mesh.CreateSphere("sphere", 20, 1, gameScene.scene);
-    var material = new BABYLON.StandardMaterial("enemyMat", gameScene.scene);
+  function Enemy (parent, x, z) {
+    this.mesh = BABYLON.Mesh.CreateSphere("sphere", 20, 1, parent);
+    var material = new BABYLON.StandardMaterial("enemyMat", parent);
     material.diffuseColor = new BABYLON.Color3(1, 0, 0);
     this.mesh.material = material;
     this.mesh.position.copyFromFloats(x, 0.5, z);
