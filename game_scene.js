@@ -170,8 +170,17 @@ var GameScene = (function () {
     this.player.mesh.position.x = 0;
     this.player.mesh.position.z = 0;
     this.wave.enemies = [];
+    this.removeAllLasers();
     this.createWave(this.waveEnemyCount);
     this.startCountdown();
+  }
+
+  GameScene.prototype.removeAllLasers = function() {
+    for (var i = this.lasers.length - 1; i >= 0; i--) {
+      var laser = this.lasers[i];
+      laser.mesh.dispose();
+    }
+    this.lasers = [];
   }
 
   GameScene.prototype.removeEvents = function () {
@@ -256,6 +265,7 @@ var GameScene = (function () {
     this.wave = null;
     this.plane.dispose();
     this.camera.dispose();
+    this.removeAllLasers();
 
     for (var i = this.walls.length - 1; i >= 0; i--) {
       this.walls[i].dispose();
