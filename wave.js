@@ -5,6 +5,8 @@ var Wave = (function () {
     for (var i = 0; i < enemyCount; i++) {
       this.addEnemy(cubeArray);
     }
+    this.max = enemyCount;
+    this.setLabelText();
   }
 
   Wave.prototype.addEnemy = function (cubeArray) {
@@ -31,21 +33,41 @@ var Wave = (function () {
 
       attempts++;
 
-      if (attempts > 60) {
+      if (attempts > 300) {
         return;
       }
     }
     this.enemies.push(new Enemy(this.scene.scene, x, z));
   }
 
+  Wave.prototype.getElement = function () {
+    return document.getElementById("wavecounter");
+  }
+
+  Wave.prototype.removeAll = function () {
+    for (var i = this.enemies.length - 1; i >= 0; i--) {
+      var enemy = this.enemies[i];
+      enemy.mesh.dispose();
+    }
+
+    var counter = this.getElement();
+    document.body.removeChild(counter);
+
+    this.enemies = [];
+  }
+
   Wave.prototype.removeEnemy = function(enemy) {
     enemy.mesh.dispose()
     this.enemies.splice(this.enemies.indexOf(enemy), 1);
+    this.setLabelText();
   }
 
-  Wave.prototype.removeObjects = function () {
-    // body...
+  Wave.prototype.setLabelText = function () {
+    var ele = this.getElement();
+    var text = "Wave " + this.scene.waveCount + " - " + this.enemies.length + "/" + this.max;
+    ele.innerText = text;
   }
+
 
   return Wave;
 })();

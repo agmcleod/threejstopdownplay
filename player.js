@@ -42,6 +42,12 @@ var Player = (function () {
     this.damageTime = 0;
   }
 
+  Player.prototype.resetHealth = function () {
+    this.health = 5;
+    this.mesh.material.diffuseColor = new BABYLON.Color3(0, 0, 0);
+    this.mesh.material.emissiveColor = new BABYLON.Color3(0.7, 0.7, 0);
+  }
+
   Player.prototype.takeHit = function () {
     if (this.health > 0) {
       if (Date.now() - this.damageTime > 500) {

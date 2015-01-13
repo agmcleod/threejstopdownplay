@@ -2,11 +2,11 @@ var GameScene = (function () {
 
   function getRandomCoordinate () {
     var coord = -30 + Math.round(Math.random() * 60);
-    if (coord < 0 && coord > -3) {
+    if (coord < 0 && coord > -6) {
       coord -= 3;
     }
-    if (coord > 0 && coord < 3) {
-      coord += 3;
+    if (coord > 0 && coord < 6) {
+      coord += 6;
     }
     return coord;
   }
@@ -27,29 +27,14 @@ var GameScene = (function () {
     this.walls = [];
 
     this.bindEvents();
-
+    var waveCounter = document.createElement('p');
+    this.waveCount = 1;
+    this.waveEnemyCount = 20;
+    waveCounter.id = 'wavecounter';
+    document.body.appendChild(waveCounter);
     this.addObjects();
-    var ua = window.navigator.userAgent;
-    // iOS Device ?
-    var iOS = ua.match(/iPhone|iPad|iPod/i) || false;
-    // Android Device ?
-    var android = ua.match(/Android/i) || false;
-    var android2 = ua.match(/Android 2/i) || false;
-    // Windows Device ?
-    var wp = ua.match(/Windows Phone/i) || false;
-    // Kindle device ?
-    var BlackBerry = ua.match(/BlackBerry/i) || false;
-    // Kindle device ?
-    var Kindle = ua.match(/Kindle|Silk.*Mobile Safari/i) || false;
-    this.isMobile = ua.match(/Mobi/i) ||
-      iOS ||
-      android ||
-      wp ||
-      BlackBerry ||
-      Kindle ||
-      iOS || false;
+    this.setMobileStatus();
     this.time = Date.now();
-    this.countdown = true;
     this.startCountdown();
   }
 
@@ -122,7 +107,7 @@ var GameScene = (function () {
       this.addCube(this.cubes, this.cubeTrackArray);
     }
 
-    this.createWave(20);
+    this.createWave(this.waveEnemyCount);
     this.addWalls();
   }
 
@@ -166,6 +151,29 @@ var GameScene = (function () {
     this.wave = new Wave(this, count, this.cubeTrackArray);
   }
 
+  GameScene.prototype.nextWave = function () {
+    this.waveCount++;
+    if (this.waveCount % 4 === 0) {
+      this.player.resetHealth();
+    }
+
+    if (this.waveCount < 3) {
+      this.waveEnemyCount += 4;
+    }
+    else if (this.waveCount < 10) {
+      this.waveEnemyCount += 3;
+    }
+    else {
+      this.waveEnemyCount += 2;
+    }
+
+    this.player.mesh.position.x = 0;
+    this.player.mesh.position.z = 0;
+    this.wave.enemies = [];
+    this.createWave(this.waveEnemyCount);
+    this.startCountdown();
+  }
+
   GameScene.prototype.removeEvents = function () {
     this.mouseControls.unbind();
     this.keyControls.unbind();
@@ -198,12 +206,37 @@ var GameScene = (function () {
       this.removeEvents();
       this.showEndScreen();
     }
+    else if (this.wave.enemies.length === 0) {
+      this.nextWave();
+    }
   }
 
   GameScene.prototype.resizeEvent = function () {
     this.engine.resize();
     this.canvas.style.width = (window.innerWidth) + 'px';
     this.canvas.style.height = (window.innerHeight) + 'px';
+  }
+
+  GameScene.prototype.setMobileStatus = function () {
+    var ua = window.navigator.userAgent;
+    // iOS Device ?
+    var iOS = ua.match(/iPhone|iPad|iPod/i) || false;
+    // Android Device ?
+    var android = ua.match(/Android/i) || false;
+    var android2 = ua.match(/Android 2/i) || false;
+    // Windows Device ?
+    var wp = ua.match(/Windows Phone/i) || false;
+    // Kindle device ?
+    var BlackBerry = ua.match(/BlackBerry/i) || false;
+    // Kindle device ?
+    var Kindle = ua.match(/Kindle|Silk.*Mobile Safari/i) || false;
+    this.isMobile = ua.match(/Mobi/i) ||
+      iOS ||
+      android ||
+      wp ||
+      BlackBerry ||
+      Kindle ||
+      iOS || false;
   }
 
   GameScene.prototype.showEndScreen = function () {
@@ -219,11 +252,8 @@ var GameScene = (function () {
 
     this.cubes = [];
 
-    for (var i = this.enemies.length - 1; i >= 0; i--) {
-      this.enemies[i].mesh.dispose();
-    }
-
-    this.enemies = [];
+    this.wave.removeAll();
+    this.wave = null;
     this.plane.dispose();
     this.camera.dispose();
 
@@ -245,6 +275,7 @@ var GameScene = (function () {
   }
 
   GameScene.prototype.startCountdown = function () {
+    this.countdown = true;
     var countdownTexture = new BABYLON.DynamicTexture("dynamic texture", 1024, this.scene, true);
     this.plane.material = new BABYLON.StandardMaterial("plane", this.scene);
     this.plane.material.diffuseTexture = countdownTexture;
