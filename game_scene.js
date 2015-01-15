@@ -36,6 +36,7 @@ var GameScene = (function () {
     this.setMobileStatus();
     this.time = Date.now();
     this.startCountdown();
+    this.shouldUpdate = true;
   }
 
   GameScene.prototype.addCube = function (cubes, cubeTrackArray) {
@@ -151,8 +152,20 @@ var GameScene = (function () {
     this.wave = new Wave(this, count, this.cubeTrackArray);
   }
 
-  GameScene.prototype.nextWave = function () {
+  GameScene.prototype.endWave = function () {
     this.waveCount++;
+    this.shouldUpdate = false;
+    var p = document.createElement("p");
+    p.innerText = "Wave complete!";
+    p.id = "msg";
+    p.style.top = (window.innerHeight / 2 - 14) + "px";
+    document.body.appendChild(p);
+    this.endTimer = Date.now();
+  }
+
+  GameScene.prototype.nextWave = function () {
+    var p = document.getElementById('msg');
+    document.body.removeChild(p);
     if (this.waveCount % 4 === 0) {
       this.player.resetHealth();
     }
@@ -204,19 +217,25 @@ var GameScene = (function () {
       }
       else if (diff >= 3000 && this.currentCountDown === 1) {
         this.countdown = false;
+        this.shouldUpdate = true;
         this.plane.material.diffuseTexture.drawText("", null, 540, "bold 100px Helvetica", "white", "#555555");
       }
     }
-    else {
+    else if(this.shouldUpdate) {
       endScene = this.update(endScene);
+    }
+    else {
+      if (Date.now() - this.endTimer > 2000) {
+        this.nextWave();
+      }
     }
     this.scene.render();
     if (endScene) {
       this.removeEvents();
       this.showEndScreen();
     }
-    else if (this.wave.enemies.length === 0) {
-      this.nextWave();
+    else if (this.wave.enemies.length === 0 && this.shouldUpdate) {
+      this.endWave();
     }
   }
 
