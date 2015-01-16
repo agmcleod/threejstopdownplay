@@ -37,6 +37,12 @@ var GameScene = (function () {
     this.time = Date.now();
     this.startCountdown();
     this.shouldUpdate = true;
+    if (this.isMobile) {
+      this.showInstructions('drag', 'touchimage');
+    }
+    else {
+      this.showInstructions('keyboard', 'mouse');
+    }
   }
 
   GameScene.prototype.addCube = function (cubes, cubeTrackArray) {
@@ -202,6 +208,18 @@ var GameScene = (function () {
     window.removeEventListener("resize", this.resizeEvent.bind(this));
   }
 
+  GameScene.prototype.removeInstructions = function () {
+    var tags = document.getElementsByClassName('left-controls');
+    for (var i = tags.length - 1; i >= 0; i--) {
+      document.body.removeChild(tags[i]);
+    }
+
+    var tags = document.getElementsByClassName('right-controls');
+    for (var i = tags.length - 1; i >= 0; i--) {
+      document.body.removeChild(tags[i]);
+    }
+  }
+
   GameScene.prototype.removeLaser = function(laser) {
     laser.mesh.dispose();
     this.lasers.splice(this.lasers.indexOf(laser), 1);
@@ -219,6 +237,7 @@ var GameScene = (function () {
         this.countdown = false;
         this.shouldUpdate = true;
         this.plane.material.diffuseTexture.drawText("", null, 540, "bold 100px Helvetica", "white", "#555555");
+        this.removeInstructions();
       }
     }
     else if(this.shouldUpdate) {
@@ -301,6 +320,22 @@ var GameScene = (function () {
         window.scene.render();
       });
     });
+  }
+
+  GameScene.prototype.showInstructions = function (left, right) {
+    var leftControls = new Image();
+    leftControls.src = 'img/'+ left +'.png';
+    leftControls.onload = function () {
+      leftControls.className = "left-controls";
+      document.body.appendChild(leftControls);
+    }
+
+    var rightControls = new Image();
+    rightControls.src = 'img/'+ right +'.png';
+    rightControls.onload = function () {
+      rightControls.className = "right-controls";
+      document.body.appendChild(rightControls);
+    }
   }
 
   GameScene.prototype.startCountdown = function () {

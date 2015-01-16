@@ -28,6 +28,24 @@
         z-index: 10;
         width: 100%;
       }
+
+      .left-controls {
+        position: absolute;
+        left: 0;
+        z-index: 10;
+        width: 30%;
+        top: 50%;
+        transform: translate(0, -50%)
+      }
+
+      .right-controls {
+        position: absolute;
+        right: 0;
+        z-index: 10;
+        width: 30%;
+        top: 50%;
+        transform: translate(0, -50%)
+      }
     </style>
     <script type="text/javascript" charset="utf-8">
       if(window.location.hostname === 'projects.agmprojects.com') {
@@ -58,6 +76,7 @@
   </head>
   <body>
     <script>
+      window.devicePixelRatio = window.devicePixelRatio || 1;
       window.loader = new ImageLoader([
         { name: "retry", src: "img/retry.png" },
         { name: "title", src: "img/title.png" }
