@@ -172,9 +172,7 @@ var GameScene = (function () {
   GameScene.prototype.nextWave = function () {
     var p = document.getElementById('msg');
     document.body.removeChild(p);
-    if (this.waveCount % 4 === 0) {
-      this.player.resetHealth();
-    }
+    this.player.resetHealth();
 
     if (this.waveCount < 3) {
       this.waveEnemyCount += 4;
