@@ -142,7 +142,10 @@ var GameScene = (function () {
   }
 
   GameScene.prototype.bindEvents = function () {
+    var _this = this;
     window.addEventListener("resize", this.resizeEvent.bind(this), false);
+    window.addEventListener("blur", this.blurEvent.bind(this), false);
+    window.addEventListener("focus", this.focusEvent.bind(this), false);
 
     this.mouseControls = new MouseControls();
     this.mouseControls.bindTouch();
@@ -152,6 +155,11 @@ var GameScene = (function () {
     this.keyControls.bindKey("D");
     this.keyControls.bindKey("A");
     this.keyControls.bindKey("S");
+  }
+
+  GameScene.prototype.blurEvent = function () {
+    this.paused = true;
+    this.pausedTime = Date.now();
   }
 
   GameScene.prototype.createWave = function (count) {
@@ -167,6 +175,20 @@ var GameScene = (function () {
     p.style.top = (window.innerHeight / 2 - 14) + "px";
     document.body.appendChild(p);
     this.endTimer = Date.now();
+  }
+
+  GameScene.prototype.focusEvent = function () {
+    this.paused = false;
+    var unpauseTime = Date.now();
+    var delta = unpauseTime - this.pausedTime;
+
+    for (var i = this.lasers.length - 1; i >= 0; i--) {
+      var laser = this.lasers[i];
+      laser.time += delta;
+    }
+    this.time += delta;
+    this.startCountdownTime += delta;
+    this.endTimer += delta;
   }
 
   GameScene.prototype.nextWave = function () {
@@ -204,6 +226,8 @@ var GameScene = (function () {
     this.mouseControls.unbind();
     this.keyControls.unbind();
     window.removeEventListener("resize", this.resizeEvent.bind(this));
+    window.removeEventListener("blur", this.blurEvent.bind(this));
+    window.removeEventListener("focus", this.focusEvent.bind(this));
   }
 
   GameScene.prototype.removeInstructions = function () {
@@ -225,6 +249,9 @@ var GameScene = (function () {
 
   GameScene.prototype.render = function () {
     var endScene = false;
+    if (this.paused) {
+      return;
+    }
     if (this.countdown) {
       var diff = Date.now() - this.startCountdownTime;
       if ((diff >= 1000 && this.currentCountDown === 3) || (diff >= 2000 && this.currentCountDown === 2)) {
