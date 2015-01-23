@@ -26,6 +26,11 @@ var GameScene = (function () {
     this.lasers = [];
     this.walls = [];
 
+    var img = new Image();
+    img.id = 'pause';
+    img.src = 'img/pause.png';
+    document.body.appendChild(img);
+
     this.bindEvents();
     var waveCounter = document.createElement('p');
     this.waveCount = 1;
@@ -150,6 +155,8 @@ var GameScene = (function () {
     this.mouseControls = new MouseControls();
     this.mouseControls.bindTouch();
 
+    document.getElementById('pause').addEventListener(this.mouseControls.getMouseDownEvent(), this.pauseEvent.bind(this), false);
+
     this.keyControls = new KeyControls();
     this.keyControls.bindKey("W");
     this.keyControls.bindKey("D");
@@ -214,6 +221,15 @@ var GameScene = (function () {
     this.startCountdown();
   }
 
+  GameScene.prototype.pauseEvent = function () {
+    if (this.paused) {
+      this.focusEvent();
+    }
+    else {
+      this.blurEvent();
+    }
+  }
+
   GameScene.prototype.removeAllLasers = function() {
     for (var i = this.lasers.length - 1; i >= 0; i--) {
       var laser = this.lasers[i];
@@ -228,6 +244,7 @@ var GameScene = (function () {
     window.removeEventListener("resize", this.resizeEvent.bind(this));
     window.removeEventListener("blur", this.blurEvent.bind(this));
     window.removeEventListener("focus", this.focusEvent.bind(this));
+    document.getElementById('pause').removeEventListener(this.mouseControls.getMouseDownEvent(), this.pauseEvent.bind(this));
   }
 
   GameScene.prototype.removeInstructions = function () {
@@ -329,6 +346,8 @@ var GameScene = (function () {
     this.plane.dispose();
     this.camera.dispose();
     this.removeAllLasers();
+
+    document.body.removeChild(document.getElementById('pause'));
 
     for (var i = this.walls.length - 1; i >= 0; i--) {
       this.walls[i].dispose();

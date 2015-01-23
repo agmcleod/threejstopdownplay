@@ -9,12 +9,17 @@ var ImageScreen = (function () {
     this.y = 22;
     this.width = 173;
     this.height = 99;
+    this.mouseControls = new MouseControls();
   }
 
   api.prototype.imageCallback = function (e) {
     var widthRatio = this.image.width / this.originalWidth;
     var heightRatio = this.image.height / this.originalHeight;
     var x = e.clientX, y = e.clientY;
+    if (e.touches) {
+      x = e.touches[0].clientX;
+      y = e.touches[0].clientY;
+    }
     var left = widthRatio * this.x, top = heightRatio * this.y;
     var right = this.width * widthRatio + left;
     var bottom = this.height * heightRatio + top;
@@ -25,7 +30,7 @@ var ImageScreen = (function () {
   }
 
   api.prototype.removeSelf = function () {
-    this.image.removeEventListener('click', this.imageCallback.bind(this));
+    this.image.removeEventListener(this.mouseControls.getMouseDownEvent(), this.imageCallback.bind(this));
     window.removeEventListener("resize", this.resize.bind(this));
     this.image.parentNode.removeChild(this.image);
   }
@@ -40,7 +45,7 @@ var ImageScreen = (function () {
     this.resize();
     document.body.appendChild(this.image);
     this.callback = callback;
-    this.image.addEventListener('click', this.imageCallback.bind(this));
+    this.image.addEventListener(this.mouseControls.getMouseDownEvent(), this.imageCallback.bind(this));
   }
 
   return api;

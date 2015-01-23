@@ -165,6 +165,10 @@
     canvas.addEventListener(activeEventList[POINTER_UP], upEvent);
   }
 
+  MouseControls.prototype.getMouseDownEvent = function () {
+    return activeEventList[POINTER_DOWN];
+  }
+
   MouseControls.prototype.mouseDown = function () {
     return this.isDown;
   }
