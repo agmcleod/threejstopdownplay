@@ -40,12 +40,34 @@ var Player = (function () {
     this.collisionBounds.parent = this.mesh;
     this.lastLaserTime = 0;
     this.damageTime = 0;
+
+    var healthUI = document.createElement("p");
+    healthUI.id = "healthui";
+    document.body.appendChild(healthUI);
+    this.drawHealth();
+  }
+
+  Player.prototype.cleanup = function () {
+    this.mesh.dispose();
+    var ui = document.getElementById("healthui");
+    document.body.removeChild(ui);
+  }
+
+  Player.prototype.drawHealth = function () {
+    var ui = document.getElementById("healthui");
+    var html = [];
+    for (var i = 0; i < this.health; i++) {
+      html.push('<img src="img/healthball.png" />');
+    }
+
+    ui.innerHTML = html.join("");
   }
 
   Player.prototype.resetHealth = function () {
     this.health = 5;
     this.mesh.material.diffuseColor = new BABYLON.Color3(0, 0, 0);
     this.mesh.material.emissiveColor = new BABYLON.Color3(0.7, 0.7, 0);
+    this.drawHealth();
   }
 
   Player.prototype.takeHit = function () {
@@ -55,6 +77,7 @@ var Player = (function () {
         this.health--;
         this.mesh.material.emissiveColor.r = this.colours[this.health][0];
         this.mesh.material.emissiveColor.g = this.colours[this.health][1];
+        this.drawHealth();
       }
       return false;
     }

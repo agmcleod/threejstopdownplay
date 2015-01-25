@@ -333,7 +333,7 @@ var GameScene = (function () {
     var canvas = document.getElementById("screen");
     document.body.removeChild(canvas);
     var loss = new ImageScreen("retry");
-    this.player.mesh.dispose();
+    this.player.cleanup();
     this.player = null;
     for (var i = this.cubes.length - 1; i >= 0; i--) {
       this.cubes[i].dispose();
