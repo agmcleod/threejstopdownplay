@@ -280,6 +280,7 @@ var GameScene = (function () {
         this.shouldUpdate = true;
         this.plane.material.diffuseTexture.drawText("", null, 540, "bold 100px Helvetica", "white", "#555555");
         this.removeInstructions();
+        this.player.drawHealth();
       }
     }
     else if(this.shouldUpdate) {

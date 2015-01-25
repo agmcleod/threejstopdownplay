@@ -44,7 +44,6 @@ var Player = (function () {
     var healthUI = document.createElement("p");
     healthUI.id = "healthui";
     document.body.appendChild(healthUI);
-    this.drawHealth();
   }
 
   Player.prototype.cleanup = function () {
