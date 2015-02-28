@@ -1,5 +1,27 @@
 var GameScene = (function () {
 
+  function select (position) {
+    var selection = new BABYLON.Tools.SmartArray(256);
+
+    for (var index = 0; index < octree.blocks.length; index++) {
+      var block = octree.blocks[index];
+      blockSelect(block, position,selection);
+    }
+
+    return selection;
+  }
+
+  function blockSelect (block, position, selection) {
+    if (block.blocks) {
+      for (var index = 0; index < block.blocks.length; index++) {
+        var block = block.blocks[index];
+        blockSelect(block, position, selection);
+      }
+      return;
+    }
+  }
+
+
   function getRandomCoordinate () {
     var coord = -30 + Math.round(Math.random() * 60);
     if (coord < 0 && coord > -6) {
@@ -37,6 +59,7 @@ var GameScene = (function () {
     this.waveEnemyCount = 20;
     waveCounter.id = 'wavecounter';
     document.body.appendChild(waveCounter);
+
     this.addObjects();
     this.setMobileStatus();
     this.time = Date.now();
@@ -266,6 +289,7 @@ var GameScene = (function () {
 
   GameScene.prototype.render = function () {
     var endScene = false;
+
     if (this.paused) {
       return;
     }
@@ -403,30 +427,47 @@ var GameScene = (function () {
 
     for (var i = enemies.length - 1; i >= 0; i--) {
       var enemy = enemies[i];
-      endScene |= enemy.update(this.player);
-      for (var l = this.lasers.length - 1; l >= 0; l--) {
-        var laser = this.lasers[l];
-        if (enemy.mesh.intersectsMesh(laser.mesh, false)) {
-          this.wave.removeEnemy(enemy);
-          this.removeLaser(laser);
-        }
-      }
+      // endScene |= enemy.update(this.player);
+      // for (var l = this.lasers.length - 1; l >= 0; l--) {
+      //   var laser = this.lasers[l];
+      //   if (enemy.mesh.intersectsMesh(laser.mesh, false)) {
+      //     this.wave.removeEnemy(enemy);
+      //     this.removeLaser(laser);
+      //   }
+      // }
     }
 
     for (var i = this.lasers.length - 1; i >= 0; i--) {
       var laser = this.lasers[i];
       laser.update();
-      for (var c = this.cubes.length - 1; c >= 0; c--) {
-        var cube = this.cubes[c];
-        if (cube.intersectsMesh(laser.mesh, false)) {
-          this.removeLaser(laser);
-        }
-      }
+      // for (var c = this.cubes.length - 1; c >= 0; c--) {
+      //   var cube = this.cubes[c];
+      //   if (cube.intersectsMesh(laser.mesh, false)) {
+      //     this.removeLaser(laser);
+      //   }
+      // }
 
-      for (var w = this.walls.length - 1; w >= 0; w--) {
-        var wall = this.walls[w];
-        if (wall.intersectsMesh(laser.mesh, false)) {
+      // for (var w = this.walls.length - 1; w >= 0; w--) {
+      //   var wall = this.walls[w];
+      //   if (wall.intersectsMesh(laser.mesh, false)) {
+      //     this.removeLaser(laser);
+      //   }
+      // }
+    }
+
+    var octree = this.scene.createOrUpdateSelectionOctree();
+
+    for (var i = this.lasers.length - 1; i >= 0; i--) {
+      var laser = this.lasers[i];
+      var meshes = octree.intersects(laser.mesh.position, 1, false);
+      for (var i = meshes.length - 1; i >= 0; i--) {
+        var mesh = meshes.data[i];
+        if (mesh.name !== "ground" && mesh.name !== "player" && laser.mesh.intersectsMesh(mesh, false)) {
+          console.log(mesh.position, laser.mesh.position);
           this.removeLaser(laser);
+          if (mesh.name === "enemy") {
+            this.wave.removeEnemy(mesh.refObject);
+          }
         }
       }
     }
