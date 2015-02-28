@@ -427,32 +427,11 @@ var GameScene = (function () {
 
     for (var i = enemies.length - 1; i >= 0; i--) {
       var enemy = enemies[i];
-      // endScene |= enemy.update(this.player);
-      // for (var l = this.lasers.length - 1; l >= 0; l--) {
-      //   var laser = this.lasers[l];
-      //   if (enemy.mesh.intersectsMesh(laser.mesh, false)) {
-      //     this.wave.removeEnemy(enemy);
-      //     this.removeLaser(laser);
-      //   }
-      // }
     }
 
     for (var i = this.lasers.length - 1; i >= 0; i--) {
       var laser = this.lasers[i];
       laser.update();
-      // for (var c = this.cubes.length - 1; c >= 0; c--) {
-      //   var cube = this.cubes[c];
-      //   if (cube.intersectsMesh(laser.mesh, false)) {
-      //     this.removeLaser(laser);
-      //   }
-      // }
-
-      // for (var w = this.walls.length - 1; w >= 0; w--) {
-      //   var wall = this.walls[w];
-      //   if (wall.intersectsMesh(laser.mesh, false)) {
-      //     this.removeLaser(laser);
-      //   }
-      // }
     }
 
     var octree = this.scene.createOrUpdateSelectionOctree();
