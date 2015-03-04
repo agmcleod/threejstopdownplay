@@ -15,7 +15,7 @@ var Laser = (function () {
   }
 
   Laser.prototype.update = function () {
-    var delta = BABYLON.Tools.GetDeltaTime();
+    var delta = window.scene.engine.getDeltaTime();
     this.mesh.position.x += this.impulseVector.x * delta;
     this.mesh.position.z += this.impulseVector.z * delta;
     if (Date.now() - this.time > 2000) {

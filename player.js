@@ -86,7 +86,7 @@ var Player = (function () {
   }
 
   Player.prototype.update = function () {
-    var delta = BABYLON.Tools.GetDeltaTime();
+    var delta = window.scene.engine.getDeltaTime();
     if (scene.mouseControls.isDown) {
       var coords = scene.mouseControls.touches[0];
       var pickResult = window.scene.scene.pick(coords.x, coords.y);
