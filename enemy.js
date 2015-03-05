@@ -12,6 +12,7 @@ var Enemy = (function () {
     this.dir = new BABYLON.Vector3(
       0,0,0
     );
+    this.mesh.name = 'enemy';
     this.mesh.collisionsEnabled = true;
     this.mesh.ellipsoid = new BABYLON.Vector3(0.5, 1, 0.5);
     this.mesh.ellipsoidOffset = new BABYLON.Vector3(0, 1.0, 0);

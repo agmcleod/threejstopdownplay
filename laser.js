@@ -11,6 +11,7 @@ var Laser = (function () {
     this.impulseVector = new BABYLON.Vector3(velX / 22, 0, velZ / 22);
     this.mesh.collisionsEnabled = true;
     this.mesh.ellipsoid = new BABYLON.Vector3(0.5, 0.5, 0.5);
+    this.mesh.name = 'laser';
     this.time = Date.now();
   }
 

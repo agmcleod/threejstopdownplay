@@ -427,6 +427,7 @@ var GameScene = (function () {
 
     for (var i = enemies.length - 1; i >= 0; i--) {
       var enemy = enemies[i];
+      endScene |= enemy.update(this.player);
     }
 
     for (var i = this.lasers.length - 1; i >= 0; i--) {
@@ -441,8 +442,7 @@ var GameScene = (function () {
       var meshes = octree.intersects(laser.mesh.position, 1, false);
       for (var i = meshes.length - 1; i >= 0; i--) {
         var mesh = meshes.data[i];
-        if (mesh.name !== "ground" && mesh.name !== "player" && laser.mesh.intersectsMesh(mesh, false)) {
-          console.log(mesh.position, laser.mesh.position);
+        if (mesh.name !== "laser" && mesh.name !== "ground" && mesh.name !== "player" && laser.mesh.intersectsMesh(mesh, false)) {
           this.removeLaser(laser);
           if (mesh.name === "enemy") {
             this.wave.removeEnemy(mesh.refObject);
