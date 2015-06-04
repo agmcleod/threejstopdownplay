@@ -126,6 +126,7 @@ var Player = (function () {
         this.lastLaserTime = Date.now();
         var laserAngle;
         // for touch controls, target closest enemy
+        window.gameAudio.shoot.play();
         if (scene.mouseControls.touches[1].down) {
           var targetPos = new BABYLON.Vector3(Infinity, 0, Infinity);
           var playerPos = this.mesh.position;

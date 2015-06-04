@@ -445,6 +445,7 @@ var GameScene = (function () {
         if (mesh.name !== "laser" && mesh.name !== "ground" && mesh.name !== "player" && laser.mesh.intersectsMesh(mesh, false)) {
           this.removeLaser(laser);
           if (mesh.name === "enemy") {
+            gameAudio.hit.play();
             this.wave.removeEnemy(mesh.refObject);
           }
         }
